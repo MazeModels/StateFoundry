@@ -1,0 +1,25 @@
+{
+  "name": "com.mazemodels.statefoundry",
+  "version": "0.0.1",
+  "displayName": "State Foundry",
+  "description": "Implementation of statecharts, a formalism for modeling stateful logic that extends traditional finite state machines.",
+  "hideInEditor": false,
+  "type": "library",
+  "author": {
+    "name": "MazeModels",
+    "email": "stefano.pittalis@hotmail.it",
+    "url": "https://github.com/MazeModels"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MazeModels/StateFoundry.git"
+  },
+  "keywords": [
+    "statechart",
+    "state-machine",
+    "unity",
+    "fsm",
+    "game-architecture"
+  ]
+}
