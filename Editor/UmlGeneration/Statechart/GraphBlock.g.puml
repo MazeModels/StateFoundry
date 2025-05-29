@@ -1,0 +1,30 @@
+@startuml GraphBlock
+state "GraphBlock State" as ART_StatechartModule_Editor_GraphBlock_State {
+  state "Ready" as ART_StatechartModule_Editor_GraphBlock_State_Ready
+  state "Error" as ART_StatechartModule_Editor_GraphBlock_State_Error
+  state "Update" as ART_StatechartModule_Editor_GraphBlock_State_Update {
+    state "EvaluateIfBlock" as ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock
+    state "Generation" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation {
+      state "AnalyzeHierarchy" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_AnalyzeHierarchy
+      state "GenerateText" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_GenerateText
+      state "PrintUml" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_PrintUml
+    }
+    state "CheckIfGraphExists" as ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists
+    state "DeleteGraph" as ART_StatechartModule_Editor_GraphBlock_State_Update_DeleteGraph
+  }
+}
+
+ART_StatechartModule_Editor_GraphBlock_State_Error --> ART_StatechartModule_Editor_GraphBlock_State_Ready : ErrorHandled
+ART_StatechartModule_Editor_GraphBlock_State_Ready --> ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists : ScriptDeleted
+ART_StatechartModule_Editor_GraphBlock_State_Ready --> ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock : ScriptImported
+ART_StatechartModule_Editor_GraphBlock_State_Update --> ART_StatechartModule_Editor_GraphBlock_State_Error : ErrorRaised
+ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists --> ART_StatechartModule_Editor_GraphBlock_State_Ready : GraphDoesNotExist
+ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists --> ART_StatechartModule_Editor_GraphBlock_State_Update_DeleteGraph : GraphExists
+ART_StatechartModule_Editor_GraphBlock_State_Update_DeleteGraph --> ART_StatechartModule_Editor_GraphBlock_State_Ready : GraphDeleted
+ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock --> ART_StatechartModule_Editor_GraphBlock_State_Ready : ScriptIsNotBlock
+ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock --> ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_AnalyzeHierarchy : ScriptIsBlock
+ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_AnalyzeHierarchy --> ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_GenerateText : HierarchyAnalyzed
+ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_GenerateText --> ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_PrintUml : TextGenerated
+ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_PrintUml --> ART_StatechartModule_Editor_GraphBlock_State_Ready : UmlPrinted
+[*] --> ART_StatechartModule_Editor_GraphBlock_State_Ready
+@enduml
