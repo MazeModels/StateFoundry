@@ -1,30 +1,45 @@
 @startuml GraphBlock
-state "GraphBlock State" as ART_StatechartModule_Editor_GraphBlock_State {
-  state "Ready" as ART_StatechartModule_Editor_GraphBlock_State_Ready
-  state "Error" as ART_StatechartModule_Editor_GraphBlock_State_Error
-  state "Update" as ART_StatechartModule_Editor_GraphBlock_State_Update {
-    state "EvaluateIfBlock" as ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock
-    state "Generation" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation {
-      state "AnalyzeHierarchy" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_AnalyzeHierarchy
-      state "GenerateText" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_GenerateText
-      state "PrintUml" as ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_PrintUml
+state "GraphBlock" as Maze_StateFoundry_Editor_GraphBlock {
+  state "Idle" as Maze_StateFoundry_Editor_GraphBlock_Idle {
+  }
+  state "Update" as Maze_StateFoundry_Editor_GraphBlock_Update {
+    state "GraphExistenceCheck" as Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck {
     }
-    state "CheckIfGraphExists" as ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists
-    state "DeleteGraph" as ART_StatechartModule_Editor_GraphBlock_State_Update_DeleteGraph
+    state "GraphDeletion" as Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion {
+    }
+    state "BlockEvaluation" as Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation {
+    }
+    state "Generation" as Maze_StateFoundry_Editor_GraphBlock_Update_Generation {
+      state "HierarchyAnalysis" as Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis {
+      }
+      state "TextGeneration" as Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration {
+      }
+      state "UmlPrinting" as Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting {
+      }
+    }
+  }
+  state "Error" as Maze_StateFoundry_Editor_GraphBlock_Error {
   }
 }
-
-ART_StatechartModule_Editor_GraphBlock_State_Error --> ART_StatechartModule_Editor_GraphBlock_State_Ready : ErrorHandled
-ART_StatechartModule_Editor_GraphBlock_State_Ready --> ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists : ScriptDeleted
-ART_StatechartModule_Editor_GraphBlock_State_Ready --> ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock : ScriptImported
-ART_StatechartModule_Editor_GraphBlock_State_Update --> ART_StatechartModule_Editor_GraphBlock_State_Error : ErrorRaised
-ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists --> ART_StatechartModule_Editor_GraphBlock_State_Ready : GraphDoesNotExist
-ART_StatechartModule_Editor_GraphBlock_State_Update_CheckIfGraphExists --> ART_StatechartModule_Editor_GraphBlock_State_Update_DeleteGraph : GraphExists
-ART_StatechartModule_Editor_GraphBlock_State_Update_DeleteGraph --> ART_StatechartModule_Editor_GraphBlock_State_Ready : GraphDeleted
-ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock --> ART_StatechartModule_Editor_GraphBlock_State_Ready : ScriptIsNotBlock
-ART_StatechartModule_Editor_GraphBlock_State_Update_EvaluateIfBlock --> ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_AnalyzeHierarchy : ScriptIsBlock
-ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_AnalyzeHierarchy --> ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_GenerateText : HierarchyAnalyzed
-ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_GenerateText --> ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_PrintUml : TextGenerated
-ART_StatechartModule_Editor_GraphBlock_State_Update_Generation_PrintUml --> ART_StatechartModule_Editor_GraphBlock_State_Ready : UmlPrinted
-[*] --> ART_StatechartModule_Editor_GraphBlock_State_Ready
+Maze_StateFoundry_Editor_GraphBlock_Idle --> Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck : ScriptDeleted
+Maze_StateFoundry_Editor_GraphBlock_Idle --> Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation : ScriptImported
+Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck --> Maze_StateFoundry_Editor_GraphBlock_Idle : GraphDoesNotExist
+Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck --> Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion : GraphExists
+Maze_StateFoundry_Editor_GraphBlock_Update --> Maze_StateFoundry_Editor_GraphBlock_Error : ErrorRaised
+Maze_StateFoundry_Editor_GraphBlock_Error --> Maze_StateFoundry_Editor_GraphBlock_Idle : ErrorHandled
+Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion --> Maze_StateFoundry_Editor_GraphBlock_Idle : GraphDeleted
+Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation --> Maze_StateFoundry_Editor_GraphBlock_Idle : ScriptIsNotBlock
+Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation --> Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis : ScriptIsBlock
+Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis --> Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration : HierarchyAnalyzed
+Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration --> Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting : TextGenerated
+Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting --> Maze_StateFoundry_Editor_GraphBlock_Idle : UmlPrinted
+Maze_StateFoundry_Editor_GraphBlock_Idle : OnEnter() → Ready
+Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck : OnEnter() → CheckGraphExistence
+Maze_StateFoundry_Editor_GraphBlock_Error : OnEnter() → RaiseError
+Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion : OnEnter() → DeleteGraph
+Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation : OnEnter() → CheckIfBlock
+Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis : OnEnter() → AnalyzeHierarchy
+Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration : OnEnter() → GenerateText
+Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting : OnEnter() → PrintUml
+[*] --> Maze_StateFoundry_Editor_GraphBlock_Idle
 @enduml
