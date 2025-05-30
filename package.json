@@ -1,6 +1,6 @@
 {
   "name": "com.mazemodels.statefoundry",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "displayName": "State Foundry",
   "description": "Implementation of statecharts, a formalism for modeling stateful logic that extends traditional finite state machines.",
   "hideInEditor": false,
