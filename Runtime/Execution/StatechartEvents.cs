@@ -22,10 +22,10 @@ namespace Maze.StateFoundry
             UnsubscribeToEvents();
         }
 
-        public StateData Send<TEvent>(TEvent ev) where TEvent : struct, ITrigger
+        public StateData Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
             StateData currentData = m_pool.CurrentData;
-            return SendRecurse(currentData, ev);
+            return SendRecurse(currentData, trigger);
         }
 
         public void Listen<T>(Action<T> callback)
@@ -41,7 +41,7 @@ namespace Maze.StateFoundry
             }
         }
 
-        StateData SendRecurse<TEvent>(StateData data, TEvent ev) where TEvent : struct, ITrigger
+        StateData SendRecurse<TTrigger>(StateData data, TTrigger trigger) where TTrigger : struct, ITrigger
         {
             if (data == null)
             {
@@ -59,10 +59,10 @@ namespace Maze.StateFoundry
                 }
 
                 Type[] genericArgs = iface.GetGenericArguments();
-                Type evType = genericArgs[0];
+                Type triggerType = genericArgs[0];
                 Type targetType = genericArgs[1];
 
-                if (evType != typeof(TEvent))
+                if (triggerType != typeof(TTrigger))
                 {
                     continue;
                 }
@@ -72,14 +72,14 @@ namespace Maze.StateFoundry
                     throw new ArgumentException($"Type {targetType} is not registered");
                 }
 
-                Type intType = typeof(IGet<,>).MakeGenericType(typeof(TEvent), targetType);
+                Type intType = typeof(IGet<,>).MakeGenericType(typeof(TTrigger), targetType);
                 MethodInfo method = stateType.GetInterfaceMap(intType).TargetMethods.FirstOrDefault(m => m.Name.Contains("Get"));
-                method?.Invoke(data.State, new object[] { ev });
+                method?.Invoke(data.State, new object[] { trigger });
 
                 return instance;
             }
 
-            return SendRecurse(data.Parent, ev);
+            return SendRecurse(data.Parent, trigger);
         }
 
         void SubscribeToEvents()

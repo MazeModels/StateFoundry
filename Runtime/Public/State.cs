@@ -42,9 +42,9 @@ namespace Maze.StateFoundry
             return GetType().Name;
         }
 
-        public void Send<TEvent>(TEvent ev) where TEvent : struct, ITrigger
+        public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            OnEventSent?.Invoke(ev);
+            OnEventSent?.Invoke(trigger);
         }
 
         internal void InternalOnEnter()

@@ -40,7 +40,7 @@ namespace Maze.StateFoundry.Editor
             m_block.Send(new ScriptImported());
         }
 
-        void OnCheckIfBlock(CheckIfBlock ev)
+        void OnCheckIfBlock(CheckIfBlock trigger)
         {
             m_finder.FindBlocks();
 
@@ -58,13 +58,13 @@ namespace Maze.StateFoundry.Editor
             m_block.Send(new ScriptIsBlock());
         }
 
-        void OnAnalyzeHierarchy(AnalyzeHierarchy ev)
+        void OnAnalyzeHierarchy(AnalyzeHierarchy trigger)
         {
             m_analizer.BuildTree();
             m_block.Send(new HierarchyAnalyzed());
         }
 
-        void OnGenerateText(GenerateText ev)
+        void OnGenerateText(GenerateText trigger)
         {
             m_textGenerator.GenerateText();
 
@@ -77,7 +77,7 @@ namespace Maze.StateFoundry.Editor
             m_block.Send(new TextGenerated());
         }
 
-        void OnPrintUml(PrintUml ev)
+        void OnPrintUml(PrintUml trigger)
         {
             m_printer.Print();
             m_block.Send(new UmlPrinted());
