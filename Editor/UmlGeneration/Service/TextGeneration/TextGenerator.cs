@@ -178,7 +178,7 @@ namespace Maze.StateFoundry.Editor
 
         static string FindFullName(Type type, HashSet<string> fullNames)
         {
-            return fullNames.FirstOrDefault(fullName => fullName.EndsWith(type.Name));
+            return fullNames.FirstOrDefault(fullName => fullName.EndsWith($"_{type.Name}"));
         }
     }
 }
