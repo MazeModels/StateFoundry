@@ -1,6 +1,6 @@
 ﻿namespace Maze.StateFoundry
 {
-    public enum Method
+    public enum When
     {
         OnEnter = 0,
         OnExit = 1,

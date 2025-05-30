@@ -12,9 +12,9 @@ namespace Maze.StateFoundry
             Message = message;
         }
 
-        public UmlNoteAttribute(Method method, string msg)
+        public UmlNoteAttribute(When when, string what)
         {
-            Message = $"{method}() → {msg}";
+            Message = $"{when} → {what}";
         }
     }
 }
