@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Maze.StateFoundry
 {
@@ -45,11 +46,31 @@ namespace Maze.StateFoundry
         static Dictionary<Type, StateData> InstantiateStates()
         {
             var metaGraph = new StateGraph(typeof(TInitialState));
+            EnsureOnlyParameterlessConstructor(metaGraph);
 
             Dictionary<Type, StateData> dataGraph = InstantiateStates(metaGraph);
             SetupGraphConnections(metaGraph, dataGraph);
 
             return dataGraph;
+        }
+
+        static void EnsureOnlyParameterlessConstructor(StateGraph metaGraph)
+        {
+            foreach (var stateType in metaGraph.States.Keys)
+            {
+                var constructors = stateType.GetConstructors();
+                if (IsParameterlessConstructor(constructors))
+                {
+                    continue;
+                }
+
+                throw new InvalidOperationException($"Only parameterless constructor supported: {stateType.FullName}");
+            }
+        }
+
+        static bool IsParameterlessConstructor(ConstructorInfo[] constructors)
+        {
+            return constructors.Length == 1 && constructors[0].GetParameters().Length == 0;
         }
 
         static Dictionary<Type, StateData> InstantiateStates(StateGraph metaGraph)
