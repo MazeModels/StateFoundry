@@ -12,11 +12,11 @@ Implementation of statecharts, a formalism for modeling stateful logic that exte
 
 © 2025 Stefano Pittalis — All rights reserved.
 
-This project is **originally created and maintained by [Stefano Pittalis]**.
+This project is **originally created and maintained by Stefano Pittalis**.
 
 ### License
 This repository is licensed under the **MIT License**.  
-You are free to use, modify, and distribute this code under the terms of the MIT License.
+You are free to use, modify, and distribute this code under the terms of the [MIT License](LICENSE.md).
 
 ### Usage in Company Projects
 This package can be safely used within your company or personal projects without restrictions beyond the MIT License.  
@@ -27,8 +27,7 @@ In the future, this package may be offered under a **commercial license** on pla
 Using this repository does **not** grant rights to commercial versions or redistributed copies without proper licensing.
 
 ### Contact
-For questions, commercial licensing inquiries, or contributions, please contact:  
-stefano.pittalis@hotmail.it
+For questions, commercial licensing inquiries, or contributions, please contact: stefano.pittalis@hotmail.it
 
 ---
 
