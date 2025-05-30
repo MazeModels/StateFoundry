@@ -5,7 +5,7 @@
     }
 
     [UmlNote(Method.OnEnter, nameof(Ready))]
-    class Idle : State, IGet<ScriptImported, BlockEvaluation>, IGet<ScriptDeleted, GraphExistenceCheck>
+    class Idle : State, IGet<ScriptImported, BlockEvaluation>
     {
         public override void OnEnter()
         {
@@ -63,15 +63,6 @@
         public override void OnEnter()
         {
             Send(new PrintUml());
-        }
-    }
-
-    [UmlNote(Method.OnEnter, nameof(CheckGraphExistence))]
-    class GraphExistenceCheck : Update, IGet<GraphExists, GraphDeletion>, IGet<GraphDoesNotExist, Idle>
-    {
-        public override void OnEnter()
-        {
-            Send(new CheckGraphExistence());
         }
     }
 

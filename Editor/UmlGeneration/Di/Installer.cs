@@ -19,9 +19,10 @@ namespace Maze.StateFoundry.Editor
             m_graphGeneration?.Dispose();
         }
 
-        public void Run()
+        public void Run(string filePath)
         {
             m_graphGeneration = m_container.Get<GraphGeneration>();
+            m_graphGeneration.Draw(filePath);
         }
 
         void RegisterAll()
