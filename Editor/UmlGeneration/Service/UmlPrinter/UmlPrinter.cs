@@ -6,8 +6,6 @@ namespace Maze.StateFoundry.Editor
 {
     sealed class UmlPrinter
     {
-        // FIXME
-        const string PATH = @"C:\Users\StefanoPittalis\Desktop\temp\";
         const string FILE_EXTENSION = ".g.puml";
 
         readonly BlockFinder m_finder;
@@ -28,7 +26,15 @@ namespace Maze.StateFoundry.Editor
         string GetFileAbsolutePath()
         {
             Type root = m_finder.GetBlocks().First();
-            return Path.Combine(PATH, $"{root.Name}{FILE_EXTENSION}");
+            string relativePath = Path.GetDirectoryName(m_finder.FilePath);
+
+            if (relativePath == null)
+            {
+                throw new DirectoryNotFoundException($"Directory not found in path: {m_finder.FilePath}");
+            }
+
+            string absolutePath = Path.GetFullPath(relativePath);
+            return Path.Combine(absolutePath, $"{root.Name}{FILE_EXTENSION}");
         }
     }
 }
