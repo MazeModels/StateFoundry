@@ -5,7 +5,7 @@ namespace Maze.StateFoundry
 {
     public abstract class State : IDisposable
     {
-        internal event Action<IEvent> OnEventSent;
+        internal event Action<ITrigger> OnEventSent;
 
         public State()
         {
@@ -42,7 +42,7 @@ namespace Maze.StateFoundry
             return GetType().Name;
         }
 
-        public void Send<TEvent>(TEvent ev) where TEvent : struct, IEvent
+        public void Send<TEvent>(TEvent ev) where TEvent : struct, ITrigger
         {
             OnEventSent?.Invoke(ev);
         }

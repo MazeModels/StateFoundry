@@ -1,12 +1,12 @@
 ﻿namespace Maze.StateFoundry.Editor
 {
-    readonly struct ScriptImported : IEvent { }
-    readonly struct ErrorRaised : IEvent { }
-    readonly struct ErrorHandled : IEvent { }
-    readonly struct ScriptIsBlock : IEvent { }
-    readonly struct ScriptIsNotBlock : IEvent { }
-    readonly struct HierarchyAnalyzed : IEvent { }
-    readonly struct TextGenerated : IEvent { }
-    readonly struct UmlPrinted : IEvent { }
-    readonly struct GraphDeleted : IEvent { }
+    readonly struct ScriptImported : ITrigger { }
+    readonly struct ErrorRaised : ITrigger { }
+    readonly struct ErrorHandled : ITrigger { }
+    readonly struct ScriptIsBlock : ITrigger { }
+    readonly struct ScriptIsNotBlock : ITrigger { }
+    readonly struct HierarchyAnalyzed : ITrigger { }
+    readonly struct TextGenerated : ITrigger { }
+    readonly struct UmlPrinted : ITrigger { }
+    readonly struct GraphDeleted : ITrigger { }
 }

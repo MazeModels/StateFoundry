@@ -1,6 +1,6 @@
 ﻿namespace Maze.StateFoundry
 {
-    public interface IEvent
+    public interface ITrigger
     {
     }
 }

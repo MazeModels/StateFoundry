@@ -17,12 +17,12 @@ namespace Maze.StateFoundry
         }
 
 
-        public void Send<TEvent>(TEvent ev) where TEvent : struct, IEvent
+        public void Send<TEvent>(TEvent ev) where TEvent : struct, ITrigger
         {
             m_runner.Send(ev);
         }
 
-        public void Listen<TEvent>(Action<TEvent> callback) where TEvent : struct, IEvent
+        public void Listen<TEvent>(Action<TEvent> callback) where TEvent : struct, ITrigger
         {
             m_runner.Listen(callback);
         }
