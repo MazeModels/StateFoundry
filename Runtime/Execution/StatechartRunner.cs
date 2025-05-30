@@ -24,10 +24,10 @@ namespace Maze.StateFoundry
             m_pool.Dispose();
         }
 
-        public void Send<TEvent>(TEvent ev) where TEvent : struct, ITrigger
+        public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            LogEventSent<TEvent>();
-            StateData newData = m_events.Send(ev);
+            LogEventSent<TTrigger>();
+            StateData newData = m_events.Send(trigger);
 
             if (newData == null)
             {
@@ -38,11 +38,11 @@ namespace Maze.StateFoundry
             m_pool.SetCurrentState(newData);
         }
 
-        public void Listen<TEvent>(Action<TEvent> callback) where TEvent : struct, ITrigger
+        public void Listen<TTrigger>(Action<TTrigger> callback) where TTrigger : struct, ITrigger
         {
-            m_events.Listen<TEvent>(output =>
+            m_events.Listen<TTrigger>(output =>
             {
-                LogEventReceived<TEvent>();
+                LogEventReceived<TTrigger>();
                 callback?.Invoke(output);
             });
         }
@@ -63,16 +63,16 @@ namespace Maze.StateFoundry
             }
         }
 
-        void OnSend(ITrigger ev)
+        void OnSend(ITrigger trigger)
         {
             MethodInfo method = GetType().GetMethod(nameof(Send));
-            MethodInfo genericMethod = method?.MakeGenericMethod(ev.GetType());
-            genericMethod?.Invoke(this, new object[] { ev });
+            MethodInfo genericMethod = method?.MakeGenericMethod(trigger.GetType());
+            genericMethod?.Invoke(this, new object[] { trigger });
         }
 
-        void LogEventSent<TEvent>() where TEvent : struct, ITrigger
+        void LogEventSent<TTrigger>() where TTrigger : struct, ITrigger
         {
-            Debug.Log($"<color=yellow>[S]|{m_statechartType.Name}|: {typeof(TEvent).Name}</color>");
+            Debug.Log($"<color=yellow>[S]|{m_statechartType.Name}|: {typeof(TTrigger).Name}</color>");
         }
 
         static void LogTransition(StateData oldData, StateData newData)
@@ -80,9 +80,9 @@ namespace Maze.StateFoundry
             Debug.Log($"<color=cyan>[T]: |{oldData}| => |{newData}|</color>");
         }
 
-        void LogEventReceived<TEvent>() where TEvent : struct, ITrigger
+        void LogEventReceived<TTrigger>() where TTrigger : struct, ITrigger
         {
-            Debug.Log($"<color=magenta>[R]|{m_statechartType.Name}|: {typeof(TEvent).Name}</color>");
+            Debug.Log($"<color=magenta>[R]|{m_statechartType.Name}|: {typeof(TTrigger).Name}</color>");
         }
     }
 }

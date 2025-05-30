@@ -38,14 +38,14 @@ namespace Maze.StateFoundry
             m_children.Add(child);
         }
 
-        public void AddTransition(Type ev, StateMeta destination)
+        public void AddTransition(Type trigger, StateMeta destination)
         {
-            m_transitions[ev] = destination;
+            m_transitions[trigger] = destination;
         }
 
-        public void AddDirectTransition(Type ev, StateMeta destination)
+        public void AddDirectTransition(Type trigger, StateMeta destination)
         {
-            m_directTransition[ev] = destination;
+            m_directTransition[trigger] = destination;
         }
 
         public void AddCaption(string note)

@@ -88,10 +88,10 @@ namespace Maze.StateFoundry
 
                 foreach (Type iface in getInterfaces)
                 {
-                    Type ev = iface.GetGenericArguments()[0];
+                    Type trigger = iface.GetGenericArguments()[0];
                     Type destination = iface.GetGenericArguments()[1];
                     BuildMetaGraphRecursive(destination, visited);
-                    visited[state].AddDirectTransition(ev, visited[destination]);
+                    visited[state].AddDirectTransition(trigger, visited[destination]);
                 }
             }
         }

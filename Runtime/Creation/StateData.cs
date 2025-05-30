@@ -34,9 +34,9 @@ namespace Maze.StateFoundry
             Parent = parent;
         }
 
-        public void AddTransition(Type ev, StateData destination)
+        public void AddTransition(Type trigger, StateData destination)
         {
-            m_transitions[ev] = destination;
+            m_transitions[trigger] = destination;
         }
 
         public void AddChild(StateData child)
