@@ -1,0 +1,127 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Maze.StateFoundry
+{
+    sealed class StatePool<TInitialState> : IDisposable where TInitialState : State, new()
+    {
+        public StateData CurrentData { get; private set; }
+
+        public IReadOnlyDictionary<Type, StateData> States => m_states;
+
+        readonly Dictionary<Type, StateData> m_states;
+        readonly StatechartNavigator m_nav;
+
+
+        public StatePool()
+        {
+            m_states = InstantiateStates();
+            m_nav = new StatechartNavigator();
+            SetCurrentState(m_states[typeof(TInitialState)]);
+        }
+
+        public void Dispose()
+        {
+            foreach (StateData data in m_states.Values)
+            {
+                data.Dispose();
+            }
+        }
+
+        public IReadOnlyDictionary<Type, StateData> GetStates()
+        {
+            return m_states;
+        }
+
+        public void SetCurrentState(StateData newData)
+        {
+            StateData oldData = CurrentData;
+            CurrentData = newData;
+            CallbackChain(newData, oldData);
+        }
+
+
+        static Dictionary<Type, StateData> InstantiateStates()
+        {
+            var metaGraph = new StateGraph(typeof(TInitialState));
+
+            Dictionary<Type, StateData> dataGraph = InstantiateStates(metaGraph);
+            SetupGraphConnections(metaGraph, dataGraph);
+
+            return dataGraph;
+        }
+
+        static Dictionary<Type, StateData> InstantiateStates(StateGraph metaGraph)
+        {
+            return metaGraph.States.ToDictionary(pair => pair.Key, pair => new StateData(pair.Value));
+        }
+
+        static void SetupGraphConnections(StateGraph metaGraph, Dictionary<Type, StateData> dataGraph)
+        {
+            foreach ((Type type, StateData stateData) in dataGraph)
+            {
+                StateMeta meta = metaGraph.States[type];
+                SetupParent(stateData, dataGraph, meta);
+                SetupChildren(stateData, dataGraph, meta);
+                SetupTransitions(stateData, dataGraph, meta);
+            }
+        }
+
+        static void SetupParent(StateData stateData, Dictionary<Type, StateData> dataGraph, StateMeta meta)
+        {
+            if (meta.Parent == null)
+            {
+                return;
+            }
+
+            StateMeta parentMeta = meta.Parent;
+            stateData.SetParent(dataGraph[parentMeta.Type]);
+        }
+
+        static void SetupChildren(StateData stateData, Dictionary<Type, StateData> dataGraph, StateMeta meta)
+        {
+            foreach (StateMeta childMeta in meta.Children)
+            {
+                stateData.AddChild(dataGraph[childMeta.Type]);
+            }
+        }
+
+        static void SetupTransitions(StateData stateData, Dictionary<Type, StateData> dataGraph, StateMeta meta)
+        {
+            foreach (KeyValuePair<Type, StateMeta> pair in meta.Transitions)
+            {
+                stateData.AddTransition(pair.Key, dataGraph[pair.Value.Type]);
+            }
+        }
+
+
+        void CallbackChain(StateData newData, StateData oldData)
+        {
+            if (oldData == null)
+            {
+                StartingFromRoot(newData);
+                return;
+            }
+
+            StateData ancestor = m_nav.FindCommonAncestor(newData, oldData);
+            foreach (StateData data in m_nav.FindPathToAncestor(oldData, ancestor))
+            {
+                data.State.InternalOnExit();
+            }
+
+            foreach (StateData data in m_nav.FindPathFromAncestor(newData, ancestor))
+            {
+                data.State.InternalOnEnter();
+            }
+        }
+
+        void StartingFromRoot(StateData newData)
+        {
+            foreach (StateData data in m_nav.FindPathFromRoot(newData))
+            {
+                data.State.InternalOnEnter();
+            }
+        }
+    }
+}
