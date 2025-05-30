@@ -21,8 +21,7 @@ Thank you for your understanding and feedback as we continue to improve the pack
 ## Author and Licensing
 
 © 2025 Stefano Pittalis — All rights reserved.
-
-This project is **originally created and maintained by Stefano Pittalis**.
+_This project is originally created and maintained by Stefano Pittalis._
 
 ### License
 This repository is licensed under the **MIT License**.  
