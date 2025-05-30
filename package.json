@@ -11,6 +11,10 @@
     "url": "https://github.com/MazeModels"
   },
   "license": "MIT",
+  "homepage": "https://openupm.com/packages/com.mazemodels.statefoundry/",
+  "bugs": {
+    "url": "https://github.com/MazeModels/StateFoundry/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MazeModels/StateFoundry.git"
