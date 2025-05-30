@@ -1,0 +1,23 @@
+{
+    "name": "Maze.StateFoundry.Tests",
+    "rootNamespace": "Maze.StateFoundry.Tests",
+    "references": [
+        "GUID:b2cd8d19f45ba5548a32aeac842689e3",
+        "GUID:8837c0a4c66302143837ffb7d878adaa"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Maze.StateFoundry.Editor",
+    "rootNamespace": "Maze.StateFoundry.Editor",
+    "references": [
+        "GUID:b2cd8d19f45ba5548a32aeac842689e3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Mono.Cecil.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
