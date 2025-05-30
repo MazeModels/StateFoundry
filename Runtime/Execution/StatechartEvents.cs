@@ -22,7 +22,7 @@ namespace Maze.StateFoundry
             UnsubscribeToEvents();
         }
 
-        public StateData Send<TEvent>(TEvent ev) where TEvent : struct, IEvent
+        public StateData Send<TEvent>(TEvent ev) where TEvent : struct, ITrigger
         {
             StateData currentData = m_pool.CurrentData;
             return SendRecurse(currentData, ev);
@@ -41,7 +41,7 @@ namespace Maze.StateFoundry
             }
         }
 
-        StateData SendRecurse<TEvent>(StateData data, TEvent ev) where TEvent : struct, IEvent
+        StateData SendRecurse<TEvent>(StateData data, TEvent ev) where TEvent : struct, ITrigger
         {
             if (data == null)
             {
@@ -98,7 +98,7 @@ namespace Maze.StateFoundry
             }
         }
 
-        void OnSend(IEvent output)
+        void OnSend(ITrigger output)
         {
             if (m_callbacks.TryGetValue(output.GetType(), out Delegate del))
             {

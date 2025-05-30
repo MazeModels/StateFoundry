@@ -5,22 +5,22 @@ namespace Maze.StateFoundry.Editor
     sealed class BlockAnalyzer
     {
         readonly InitialStateFinder m_initial;
-        readonly OutputFinder m_output;
+        readonly CaptionFinder m_caption;
 
         Type m_initialState;
         StateGraph m_tree;
 
-        public BlockAnalyzer(InitialStateFinder initial, OutputFinder output)
+        public BlockAnalyzer(InitialStateFinder initial, CaptionFinder caption)
         {
             m_initial = initial;
-            m_output = output;
+            m_caption = caption;
         }
 
         public void BuildTree()
         {
             m_initialState = m_initial.FindInitialState();
             m_tree = new StateGraph(m_initialState);
-            m_tree = m_output.FindOutputs(m_tree);
+            m_tree = m_caption.FindCaptions(m_tree);
         }
 
         public Type GetInitialState()

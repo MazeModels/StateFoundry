@@ -4,7 +4,7 @@
     {
     }
 
-    [UmlNote(Method.OnEnter, nameof(Ready))]
+    [Caption(When.OnEnter, nameof(Ready))]
     class Idle : State, IGet<ScriptImported, BlockEvaluation>
     {
         public override void OnEnter()
@@ -13,7 +13,7 @@
         }
     }
 
-    [UmlNote(Method.OnEnter, nameof(RaiseError))]
+    [Caption(When.OnEnter, nameof(RaiseError))]
     class Error : State, IGet<ErrorHandled, Idle>
     {
         public override void OnEnter()
@@ -26,7 +26,7 @@
     {
     }
 
-    [UmlNote(Method.OnEnter, nameof(CheckIfBlock))]
+    [Caption(When.OnEnter, nameof(CheckIfBlock))]
     class BlockEvaluation : Update, IGet<ScriptIsBlock, HierarchyAnalysis>, IGet<ScriptIsNotBlock, Idle>
     {
         public override void OnEnter()
@@ -39,7 +39,7 @@
     {
     }
 
-    [UmlNote(Method.OnEnter, nameof(AnalyzeHierarchy))]
+    [Caption(When.OnEnter, nameof(AnalyzeHierarchy))]
     class HierarchyAnalysis : Generation, IGet<HierarchyAnalyzed, TextGeneration>
     {
         public override void OnEnter()
@@ -48,7 +48,7 @@
         }
     }
 
-    [UmlNote(Method.OnEnter, nameof(GenerateText))]
+    [Caption(When.OnEnter, nameof(GenerateText))]
     class TextGeneration : Generation, IGet<TextGenerated, UmlPrinting>
     {
         public override void OnEnter()
@@ -57,7 +57,7 @@
         }
     }
 
-    [UmlNote(Method.OnEnter, nameof(PrintUml))]
+    [Caption(When.OnEnter, nameof(PrintUml))]
     class UmlPrinting : Generation, IGet<UmlPrinted, Idle>
     {
         public override void OnEnter()
@@ -66,7 +66,7 @@
         }
     }
 
-    [UmlNote(Method.OnEnter, nameof(DeleteGraph))]
+    [Caption(When.OnEnter, nameof(DeleteGraph))]
     class GraphDeletion : Update, IGet<GraphDeleted, Idle>
     {
         public override void OnEnter()

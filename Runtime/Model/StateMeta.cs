@@ -8,7 +8,7 @@ namespace Maze.StateFoundry
         public IReadOnlyList<StateMeta> Children => m_children;
         public IReadOnlyDictionary<Type, StateMeta> Transitions => m_transitions;
         public IReadOnlyDictionary<Type, StateMeta> DirectTransition => m_directTransition;
-        public IReadOnlyList<string> Notes => m_notes;
+        public IReadOnlyList<string> Captions => m_captions;
         public StateMeta Parent { get; private set; }
 
         public readonly Type Type;
@@ -16,7 +16,7 @@ namespace Maze.StateFoundry
         readonly List<StateMeta> m_children;
         readonly Dictionary<Type, StateMeta> m_transitions;
         readonly Dictionary<Type, StateMeta> m_directTransition;
-        readonly List<string> m_notes;
+        readonly List<string> m_captions;
 
 
         public StateMeta(Type type)
@@ -25,7 +25,7 @@ namespace Maze.StateFoundry
             m_children = new List<StateMeta>();
             m_transitions = new Dictionary<Type, StateMeta>();
             m_directTransition = new Dictionary<Type, StateMeta>();
-            m_notes = new List<string>();
+            m_captions = new List<string>();
         }
 
         public void SetParent(StateMeta parent)
@@ -48,9 +48,9 @@ namespace Maze.StateFoundry
             m_directTransition[ev] = destination;
         }
 
-        public void AddNote(string note)
+        public void AddCaption(string note)
         {
-            m_notes.Add(note);
+            m_captions.Add(note);
         }
 
         public override string ToString()
