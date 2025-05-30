@@ -32,7 +32,7 @@ namespace Maze.StateFoundry.Editor
             m_container.Register<BlockAnalyzer, BlockAnalyzer>();
             m_container.Register<TextGenerator, TextGenerator>();
             m_container.Register<InitialStateFinder, InitialStateFinder>();
-            m_container.Register<OutputFinder, OutputFinder>();
+            m_container.Register<CaptionFinder, CaptionFinder>();
             m_container.Register<UmlPrinter, UmlPrinter>();
 
             m_container.Register<GraphGeneration, GraphGeneration>();

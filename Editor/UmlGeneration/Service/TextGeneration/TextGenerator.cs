@@ -52,7 +52,7 @@ namespace Maze.StateFoundry.Editor
 
             AddState(block, tree, sb, m_fullNames);
             AddTransitions(tree, sb, m_fullNames);
-            AddNotes(tree, sb, m_fullNames);
+            AddCaptions(tree, sb, m_fullNames);
             AddStartingPoint(initialState, sb, m_fullNames);
 
             AddFooter(sb);
@@ -142,14 +142,14 @@ namespace Maze.StateFoundry.Editor
             }
         }
 
-        static void AddNotes(StateGraph tree, StringBuilder sb, HashSet<string> fullNames)
+        static void AddCaptions(StateGraph tree, StringBuilder sb, HashSet<string> fullNames)
         {
             foreach (StateMeta state in tree.States.Values)
             {
                 string node = FindFullName(state.Type, fullNames);
-                foreach (string note in state.Notes)
+                foreach (string caption in state.Captions)
                 {
-                    sb.AppendLine($"{node} : {note}");
+                    sb.AppendLine($"{node} : {caption}");
                 }
             }
         }
