@@ -8,6 +8,16 @@ Implementation of statecharts, a formalism for modeling stateful logic that exte
 
 ---
 
+## ⚠️ Unstable API Notice
+
+This package is currently in an **early prototyping phase** and is considered **unstable**. The API may change significantly without prior notice, which can lead to breaking changes and require adjustments in your projects.
+
+We recommend using the package with caution during this phase. The API is expected to stabilize with the release of version **v1.0.0**, at which point backward compatibility will be better maintained.
+
+Thank you for your understanding and feedback as we continue to improve the package.
+
+---
+
 ## Author and Licensing
 
 © 2025 Stefano Pittalis — All rights reserved.
