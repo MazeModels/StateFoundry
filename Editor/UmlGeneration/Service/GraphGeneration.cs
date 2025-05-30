@@ -27,27 +27,17 @@ namespace Maze.StateFoundry.Editor
             m_block.Listen<AnalyzeHierarchy>(OnAnalyzeHierarchy);
             m_block.Listen<GenerateText>(OnGenerateText);
             m_block.Listen<PrintUml>(OnPrintUml);
-
-            ScriptWatcher.OnChange += OnScriptChanged;
-            ScriptWatcher.OnDeletion += OnScriptDeleted;
         }
 
         public void Dispose()
         {
-            ScriptWatcher.OnChange -= OnScriptChanged;
-            ScriptWatcher.OnDeletion -= OnScriptDeleted;
             m_block.Dispose();
         }
 
-        void OnScriptChanged(string fileFullPath)
+        public void Draw(string fileFullPath)
         {
             m_finder.SetPath(fileFullPath);
             m_block.Send(new ScriptImported());
-        }
-
-        void OnScriptDeleted(string fileFullPath)
-        {
-            m_block.Send(new ScriptDeleted());
         }
 
         void OnCheckIfBlock(CheckIfBlock ev)
