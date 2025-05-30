@@ -8,7 +8,28 @@ Implementation of statecharts, a formalism for modeling stateful logic that exte
 
 ---
 
-## ⚠️ Unstable API Notice
+## Installation via OpenUPM (Unity Package Manager)
+To make installing the package easier, you can use [OpenUPM](https://openupm.com/) an alternative registry for Unity’s Package Manager.
+
+### Installation Steps:
+1. Add the OpenUPM registry to Unity:
+   - Open Unity and go to **Window > Package Manager**.
+   - Click the gear icon in the top right corner and select **Advanced Project Settings**.
+   - Under **Scoped Registries**, click **+** to add a new registry.
+   - Enter the following details:
+     - **Name:** OpenUPM
+     - **URL:** https://package.openupm.com
+     - **Scopes:** `com.mazemodels.statefoundry`
+
+2. Install the package:
+   - Return to the **Package Manager** window.
+   - Click **Add package by name** (or similar, depending on your Unity version).
+   - Enter the package name: `com.mazemodels.statefoundry`
+   - Click **Add** to install the package into your project.
+
+---
+
+## Unstable API Notice
 
 This package is currently in an **early prototyping phase** and is considered **unstable**. The API may change significantly without prior notice, which can lead to breaking changes and require adjustments in your projects.
 
