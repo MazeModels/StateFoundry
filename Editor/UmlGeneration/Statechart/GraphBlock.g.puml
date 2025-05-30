@@ -3,10 +3,6 @@ state "GraphBlock" as Maze_StateFoundry_Editor_GraphBlock {
   state "Idle" as Maze_StateFoundry_Editor_GraphBlock_Idle {
   }
   state "Update" as Maze_StateFoundry_Editor_GraphBlock_Update {
-    state "GraphExistenceCheck" as Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck {
-    }
-    state "GraphDeletion" as Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion {
-    }
     state "BlockEvaluation" as Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation {
     }
     state "Generation" as Maze_StateFoundry_Editor_GraphBlock_Update_Generation {
@@ -21,23 +17,17 @@ state "GraphBlock" as Maze_StateFoundry_Editor_GraphBlock {
   state "Error" as Maze_StateFoundry_Editor_GraphBlock_Error {
   }
 }
-Maze_StateFoundry_Editor_GraphBlock_Idle --> Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck : ScriptDeleted
 Maze_StateFoundry_Editor_GraphBlock_Idle --> Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation : ScriptImported
-Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck --> Maze_StateFoundry_Editor_GraphBlock_Idle : GraphDoesNotExist
-Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck --> Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion : GraphExists
-Maze_StateFoundry_Editor_GraphBlock_Update --> Maze_StateFoundry_Editor_GraphBlock_Error : ErrorRaised
-Maze_StateFoundry_Editor_GraphBlock_Error --> Maze_StateFoundry_Editor_GraphBlock_Idle : ErrorHandled
-Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion --> Maze_StateFoundry_Editor_GraphBlock_Idle : GraphDeleted
 Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation --> Maze_StateFoundry_Editor_GraphBlock_Idle : ScriptIsNotBlock
 Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation --> Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis : ScriptIsBlock
+Maze_StateFoundry_Editor_GraphBlock_Update --> Maze_StateFoundry_Editor_GraphBlock_Error : ErrorRaised
+Maze_StateFoundry_Editor_GraphBlock_Error --> Maze_StateFoundry_Editor_GraphBlock_Idle : ErrorHandled
 Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis --> Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration : HierarchyAnalyzed
 Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration --> Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting : TextGenerated
 Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting --> Maze_StateFoundry_Editor_GraphBlock_Idle : UmlPrinted
 Maze_StateFoundry_Editor_GraphBlock_Idle : OnEnter() → Ready
-Maze_StateFoundry_Editor_GraphBlock_Update_GraphExistenceCheck : OnEnter() → CheckGraphExistence
-Maze_StateFoundry_Editor_GraphBlock_Error : OnEnter() → RaiseError
-Maze_StateFoundry_Editor_GraphBlock_Update_GraphDeletion : OnEnter() → DeleteGraph
 Maze_StateFoundry_Editor_GraphBlock_Update_BlockEvaluation : OnEnter() → CheckIfBlock
+Maze_StateFoundry_Editor_GraphBlock_Error : OnEnter() → RaiseError
 Maze_StateFoundry_Editor_GraphBlock_Update_Generation_HierarchyAnalysis : OnEnter() → AnalyzeHierarchy
 Maze_StateFoundry_Editor_GraphBlock_Update_Generation_TextGeneration : OnEnter() → GenerateText
 Maze_StateFoundry_Editor_GraphBlock_Update_Generation_UmlPrinting : OnEnter() → PrintUml
