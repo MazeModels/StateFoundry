@@ -28,9 +28,9 @@ namespace Maze.StateFoundry
             return SendRecurse(currentData, trigger);
         }
 
-        public void Listen<T>(Action<T> callback)
+        public void Listen<TTrigger>(Action<TTrigger> callback) where TTrigger : struct, ITrigger
         {
-            Type type = typeof(T);
+            Type type = typeof(TTrigger);
             if (m_callbacks.TryGetValue(type, out Delegate existing))
             {
                 m_callbacks[type] = Delegate.Combine(existing, callback);
@@ -40,6 +40,13 @@ namespace Maze.StateFoundry
                 m_callbacks[type] = callback;
             }
         }
+
+        public void OnLifecycleEvent<TState>(When expected, Action<TState> callback) where TState : State, new()
+        {
+            State state = EnsureStateIsRegistered<TState>();
+            state.OnLifecycleEvent += actual => OnLifecycleEvent(expected, actual, state, callback);
+        }
+
 
         StateData SendRecurse<TTrigger>(StateData data, TTrigger trigger) where TTrigger : struct, ITrigger
         {
@@ -104,6 +111,23 @@ namespace Maze.StateFoundry
             {
                 del.DynamicInvoke(output);
             }
+        }
+
+        void OnLifecycleEvent<TState>(When expected, When actual, State state, Action<TState> callback) where TState : State, new()
+        {
+            if (expected == actual)
+            {
+                callback?.Invoke(state as TState);
+            }
+        }
+
+        State EnsureStateIsRegistered<TState>() where TState : State, new()
+        {
+            if (!m_pool.States.TryGetValue(typeof(TState), out StateData data))
+            {
+                throw new ArgumentException($"State {typeof(TState).FullName} is not registered");
+            }
+            return data.State;
         }
     }
 }

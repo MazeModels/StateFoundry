@@ -24,6 +24,7 @@ namespace Maze.StateFoundry
             m_pool.Dispose();
         }
 
+
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
             LogEventSent<TTrigger>();
@@ -46,6 +47,28 @@ namespace Maze.StateFoundry
                 callback?.Invoke(output);
             });
         }
+
+
+        public void OnEnter<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_events.OnLifecycleEvent(When.OnEnter, callback);
+        }
+
+        public void OnExit<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_events.OnLifecycleEvent(When.OnExit, callback);
+        }
+
+        public void OnCreate<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_events.OnLifecycleEvent(When.OnCreate, callback);
+        }
+
+        public void OnDispose<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_events.OnLifecycleEvent(When.OnDispose, callback);
+        }
+
 
         void SubscribeToEvents()
         {
