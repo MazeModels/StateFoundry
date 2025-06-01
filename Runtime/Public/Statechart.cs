@@ -26,5 +26,26 @@ namespace Maze.StateFoundry
         {
             m_runner.Listen(callback);
         }
+
+
+        public void OnEnter<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_runner.OnEnter(callback);
+        }
+
+        public void OnExit<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_runner.OnExit(callback);
+        }
+
+        public void OnCreate<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_runner.OnCreate(callback);
+        }
+
+        public void OnDispose<TState>(Action<TState> callback) where TState : State, new()
+        {
+            m_runner.OnDispose(callback);
+        }
     }
 }

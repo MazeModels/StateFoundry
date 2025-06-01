@@ -6,6 +6,7 @@ namespace Maze.StateFoundry
     public abstract class State : IDisposable
     {
         internal event Action<ITrigger> OnEventSent;
+        internal event Action<When> OnLifecycleEvent;
 
         public State()
         {
@@ -51,24 +52,28 @@ namespace Maze.StateFoundry
         {
             LogSpecialMethod(nameof(OnEnter));
             OnEnter();
+            OnLifecycleEvent?.Invoke(When.OnEnter);
         }
 
         internal void InternalOnExit()
         {
             LogSpecialMethod(nameof(OnExit));
             OnExit();
+            OnLifecycleEvent?.Invoke(When.OnExit);
         }
 
         internal void InternalOnCreate()
         {
             LogSpecialMethod(nameof(OnCreate));
             OnCreate();
+            OnLifecycleEvent?.Invoke(When.OnCreate);
         }
 
         internal void InternalOnDispose()
         {
             LogSpecialMethod(nameof(OnDispose));
             OnDispose();
+            OnLifecycleEvent?.Invoke(When.OnDispose);
         }
 
         void LogSpecialMethod(string methodName)
