@@ -56,9 +56,9 @@ namespace Maze.StateFoundry
 
         static void EnsureOnlyParameterlessConstructor(StateGraph metaGraph)
         {
-            foreach (var stateType in metaGraph.States.Keys)
+            foreach (Type stateType in metaGraph.States.Keys)
             {
-                var constructors = stateType.GetConstructors();
+                ConstructorInfo[] constructors = stateType.GetConstructors();
                 if (IsParameterlessConstructor(constructors))
                 {
                     continue;
