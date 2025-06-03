@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEngine;
 
 namespace Maze.StateFoundry.Editor
 {
@@ -9,7 +10,7 @@ namespace Maze.StateFoundry.Editor
         [MenuItem(MENU_TEXT, true)]
         static bool ValidateDrawStatechartTrigger()
         {
-            foreach (var obj in Selection.objects)
+            foreach (Object obj in Selection.objects)
             {
                 string path = AssetDatabase.GetAssetPath(obj);
                 if (!path.EndsWith(".cs"))
@@ -25,7 +26,7 @@ namespace Maze.StateFoundry.Editor
         static void DrawStatechartTrigger()
         {
             using var installer = new Installer();
-            foreach (var obj in Selection.objects)
+            foreach (Object obj in Selection.objects)
             {
                 string path = AssetDatabase.GetAssetPath(obj);
                 installer.Run(path);

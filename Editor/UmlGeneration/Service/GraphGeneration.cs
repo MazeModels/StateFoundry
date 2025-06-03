@@ -23,10 +23,10 @@ namespace Maze.StateFoundry.Editor
             m_textGenerator = textGenerator;
             m_printer = printer;
 
-            m_block.Listen<CheckIfBlock>(OnCheckIfBlock);
-            m_block.Listen<AnalyzeHierarchy>(OnAnalyzeHierarchy);
-            m_block.Listen<GenerateText>(OnGenerateText);
-            m_block.Listen<PrintUml>(OnPrintUml);
+            m_block.OnEnter<BlockEvaluation>(CheckIfBlock);
+            m_block.OnEnter<HierarchyAnalysis>(AnalyzeHierarchy);
+            m_block.OnEnter<TextGeneration>(GenerateText);
+            m_block.OnEnter<UmlPrinting>(PrintUml);
         }
 
         public void Dispose()
@@ -40,7 +40,7 @@ namespace Maze.StateFoundry.Editor
             m_block.Send(new ScriptImported());
         }
 
-        void OnCheckIfBlock(CheckIfBlock trigger)
+        void CheckIfBlock(BlockEvaluation state)
         {
             m_finder.FindBlocks();
 
@@ -58,13 +58,13 @@ namespace Maze.StateFoundry.Editor
             m_block.Send(new ScriptIsBlock());
         }
 
-        void OnAnalyzeHierarchy(AnalyzeHierarchy trigger)
+        void AnalyzeHierarchy(HierarchyAnalysis state)
         {
             m_analizer.BuildTree();
             m_block.Send(new HierarchyAnalyzed());
         }
 
-        void OnGenerateText(GenerateText trigger)
+        void GenerateText(TextGeneration state)
         {
             m_textGenerator.GenerateText();
 
@@ -77,7 +77,7 @@ namespace Maze.StateFoundry.Editor
             m_block.Send(new TextGenerated());
         }
 
-        void OnPrintUml(PrintUml trigger)
+        void PrintUml(UmlPrinting state)
         {
             m_printer.Print();
             m_block.Send(new UmlPrinted());
