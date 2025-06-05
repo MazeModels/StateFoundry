@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace Maze.StateFoundry
 {
-    sealed class StatechartRunner<TInitialState> : IDisposable where TInitialState : State, new()
+    sealed class StatechartRunner<TInitialState> : IStatechart, ITriggerSink, IDisposable where TInitialState : State, new()
     {
+        public event Action<ITrigger> OnTrigger;
+
         readonly Type m_statechartType;
         readonly StatePool<TInitialState> m_pool;
         readonly StatechartEvents<TInitialState> m_events;
@@ -27,7 +29,6 @@ namespace Maze.StateFoundry
 
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            LogEventSent<TTrigger>();
             StateData newData = m_events.Send(trigger);
 
             if (newData == null)
@@ -35,7 +36,7 @@ namespace Maze.StateFoundry
                 return;
             }
 
-            LogTransition(m_pool.CurrentData, newData);
+            LogTransition(m_pool.CurrentData, newData, trigger);
             m_pool.SetCurrentState(newData);
         }
 
@@ -74,7 +75,7 @@ namespace Maze.StateFoundry
         {
             foreach (StateData data in m_pool.States.Values)
             {
-                data.State.OnEventSent += OnSend;
+                data.State.OnEventSent += InternalSend;
             }
         }
 
@@ -82,30 +83,26 @@ namespace Maze.StateFoundry
         {
             foreach (StateData data in m_pool.States.Values)
             {
-                data.State.OnEventSent -= OnSend;
+                data.State.OnEventSent -= InternalSend;
             }
         }
 
-        void OnSend(ITrigger trigger)
+        void InternalSend(ITrigger trigger)
         {
             MethodInfo method = GetType().GetMethod(nameof(Send));
             MethodInfo genericMethod = method?.MakeGenericMethod(trigger.GetType());
             genericMethod?.Invoke(this, new object[] { trigger });
+            OnTrigger?.Invoke(trigger);
         }
 
-        void LogEventSent<TTrigger>() where TTrigger : struct, ITrigger
+        void LogTransition(StateData oldData, StateData newData, ITrigger trigger)
         {
-            Debug.Log($"<color=yellow>[S]|{m_statechartType.Name}|: {typeof(TTrigger).Name}</color>");
-        }
-
-        static void LogTransition(StateData oldData, StateData newData)
-        {
-            Debug.Log($"<color=cyan>[T]: |{oldData}| => |{newData}|</color>");
+            Debug.Log($"<color=cyan>{{R}}|[{m_statechartType.Name}]: [{oldData}] --{trigger.GetType().Name}--> [{newData}]</color>");
         }
 
         void LogEventReceived<TTrigger>() where TTrigger : struct, ITrigger
         {
-            Debug.Log($"<color=magenta>[R]|{m_statechartType.Name}|: {typeof(TTrigger).Name}</color>");
+            Debug.Log($"<color=magenta>{{R}}|{m_statechartType.Name}|: {typeof(TTrigger).Name}</color>");
         }
     }
 }
