@@ -1,51 +1,49 @@
-using System;
+﻿using System;
 
 namespace Maze.StateFoundry
 {
-    public abstract class Statechart<TInitialState> : IStatechart, IDisposable where TInitialState : State, new()
+    public sealed class Stateworld : IStatechart, IDisposable
     {
-        internal readonly StatechartRunner<TInitialState> Runner;
+        readonly StatechartWorld m_internal;
 
-        public Statechart()
+        public Stateworld(params IStatechart[] charts)
         {
-            Runner = new StatechartRunner<TInitialState>(GetType());
+            m_internal = new StatechartWorld(charts);
         }
-
+        
         public void Dispose()
         {
-            Runner.Dispose();
+            m_internal.Dispose();
         }
-
 
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            Runner.Send(trigger);
+            m_internal.Send(trigger);
         }
 
         public void Listen<TTrigger>(Action<TTrigger> callback) where TTrigger : struct, ITrigger
         {
-            Runner.Listen(callback);
+            m_internal.Listen(callback);
         }
-
 
         public void OnEnter<TState>(Action<TState> callback) where TState : State, new()
         {
-            Runner.OnEnter(callback);
+            m_internal.OnEnter(callback);
         }
 
         public void OnExit<TState>(Action<TState> callback) where TState : State, new()
         {
-            Runner.OnExit(callback);
+            m_internal.OnExit(callback);
         }
 
         public void OnCreate<TState>(Action<TState> callback) where TState : State, new()
         {
-            Runner.OnCreate(callback);
+            m_internal.OnCreate(callback);
         }
 
         public void OnDispose<TState>(Action<TState> callback) where TState : State, new()
         {
-            Runner.OnDispose(callback);
+            m_internal.OnDispose(callback);
         }
     }
 }

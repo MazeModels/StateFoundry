@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace Maze.StateFoundry
 {
-    sealed class StatechartRunner<TInitialState> : IDisposable where TInitialState : State, new()
+    sealed class StatechartRunner<TInitialState> : IStatechart, ITriggerSink, IDisposable where TInitialState : State, new()
     {
+        public event Action<ITrigger> OnTrigger;
+
         readonly Type m_statechartType;
         readonly StatePool<TInitialState> m_pool;
         readonly StatechartEvents<TInitialState> m_events;
@@ -73,7 +75,7 @@ namespace Maze.StateFoundry
         {
             foreach (StateData data in m_pool.States.Values)
             {
-                data.State.OnEventSent += OnSend;
+                data.State.OnEventSent += InternalSend;
             }
         }
 
@@ -81,15 +83,16 @@ namespace Maze.StateFoundry
         {
             foreach (StateData data in m_pool.States.Values)
             {
-                data.State.OnEventSent -= OnSend;
+                data.State.OnEventSent -= InternalSend;
             }
         }
 
-        void OnSend(ITrigger trigger)
+        void InternalSend(ITrigger trigger)
         {
             MethodInfo method = GetType().GetMethod(nameof(Send));
             MethodInfo genericMethod = method?.MakeGenericMethod(trigger.GetType());
             genericMethod?.Invoke(this, new object[] { trigger });
+            OnTrigger?.Invoke(trigger);
         }
 
         void LogTransition(StateData oldData, StateData newData, ITrigger trigger)
