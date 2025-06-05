@@ -78,7 +78,8 @@ namespace Maze.StateFoundry
 
         void LogSpecialMethod(string methodName)
         {
-            Debug.Log($"{ToString()}: {methodName}");
+            // TODO: Implement verbosity toggle
+            // Debug.Log($"{ToString()}: {methodName}");
         }
     }
 }
