@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Maze.StateFoundry
 {
-    sealed class StatechartRunner<TInitialState> : IStatechart, ITriggerSink, IDisposable where TInitialState : State, new()
+    sealed class StatechartRunner<TInitialState> : IStatechartRunner, IDisposable where TInitialState : State, new()
     {
         public event Action<ITrigger> OnTrigger;
 
