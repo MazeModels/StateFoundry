@@ -16,12 +16,13 @@ namespace Maze.StateFoundry
         readonly Dictionary<Type, StateData> m_transitions;
 
 
-        public StateData(StateMeta meta)
+        public StateData(StateMeta meta, IBlackboard blackboard)
         {
             Type = meta.Type;
             m_children = new List<StateData>();
             m_transitions = new Dictionary<Type, StateData>();
             State = (State) Activator.CreateInstance(Type);
+            ((IInternalState) State).Blackboard = blackboard;
         }
 
         public void Dispose()

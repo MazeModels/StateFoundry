@@ -15,9 +15,9 @@ namespace Maze.StateFoundry
         readonly StatechartNavigator m_nav;
 
 
-        public StatePool()
+        public StatePool(IBlackboard blackboard)
         {
-            m_states = InstantiateStates();
+            m_states = InstantiateStates(blackboard);
             m_nav = new StatechartNavigator();
             SetCurrentState(m_states[typeof(TInitialState)]);
         }
@@ -43,12 +43,12 @@ namespace Maze.StateFoundry
         }
 
 
-        static Dictionary<Type, StateData> InstantiateStates()
+        static Dictionary<Type, StateData> InstantiateStates(IBlackboard blackboard)
         {
             var metaGraph = new StateGraph(typeof(TInitialState));
             EnsureOnlyParameterlessConstructor(metaGraph);
 
-            Dictionary<Type, StateData> dataGraph = InstantiateStates(metaGraph);
+            Dictionary<Type, StateData> dataGraph = InstantiateStates(metaGraph, blackboard);
             SetupGraphConnections(metaGraph, dataGraph);
 
             return dataGraph;
@@ -73,9 +73,9 @@ namespace Maze.StateFoundry
             return constructors.Length == 1 && constructors[0].GetParameters().Length == 0;
         }
 
-        static Dictionary<Type, StateData> InstantiateStates(StateGraph metaGraph)
+        static Dictionary<Type, StateData> InstantiateStates(StateGraph metaGraph, IBlackboard blackboard)
         {
-            return metaGraph.States.ToDictionary(pair => pair.Key, pair => new StateData(pair.Value));
+            return metaGraph.States.ToDictionary(pair => pair.Key, pair => new StateData(pair.Value, blackboard));
         }
 
         static void SetupGraphConnections(StateGraph metaGraph, Dictionary<Type, StateData> dataGraph)
@@ -128,12 +128,12 @@ namespace Maze.StateFoundry
             StateData ancestor = m_nav.FindCommonAncestor(newData, oldData);
             foreach (StateData data in m_nav.FindPathToAncestor(oldData, ancestor))
             {
-                data.State.InternalOnExit();
+                ((IInternalState) data.State).InternalOnExit();
             }
 
             foreach (StateData data in m_nav.FindPathFromAncestor(newData, ancestor))
             {
-                data.State.InternalOnEnter();
+                ((IInternalState) data.State).InternalOnEnter();
             }
         }
 
@@ -141,7 +141,7 @@ namespace Maze.StateFoundry
         {
             foreach (StateData data in m_nav.FindPathFromRoot(newData))
             {
-                data.State.InternalOnEnter();
+                ((IInternalState) data.State).InternalOnEnter();
             }
         }
     }

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Maze.StateFoundry
 {
     sealed class StatechartWorld : IStatechart, IDisposable
     {
-        readonly HashSet<IStatechart> m_charts;
-        readonly Dictionary<ITriggerSink, Action<ITrigger>> m_callbacks;
+        readonly HashSet<IInternalStatechart> m_statecharts;
+        readonly Dictionary<IStatechartRunner, Action<ITrigger>> m_callbacks;
 
         public StatechartWorld(IList<IStatechart> charts)
         {
-            m_charts = new HashSet<IStatechart>(charts);
-            m_callbacks = new Dictionary<ITriggerSink, Action<ITrigger>>();
+            m_statecharts = charts.Select(statechart => statechart as IInternalStatechart).ToHashSet();
+            m_callbacks = new Dictionary<IStatechartRunner, Action<ITrigger>>();
             SubscribeToTriggers();
         }
 
@@ -23,7 +24,7 @@ namespace Maze.StateFoundry
 
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 statechart.Send(trigger);
             }
@@ -31,7 +32,7 @@ namespace Maze.StateFoundry
 
         public void Listen<TTrigger>(Action<TTrigger> callback) where TTrigger : struct, ITrigger
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 statechart.Listen(callback);
             }
@@ -39,7 +40,7 @@ namespace Maze.StateFoundry
 
         public void OnEnter<TState>(Action<TState> callback) where TState : State, new()
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 statechart.OnEnter(callback);
             }
@@ -47,7 +48,7 @@ namespace Maze.StateFoundry
 
         public void OnExit<TState>(Action<TState> callback) where TState : State, new()
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 statechart.OnExit(callback);
             }
@@ -55,7 +56,7 @@ namespace Maze.StateFoundry
 
         public void OnCreate<TState>(Action<TState> callback) where TState : State, new()
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 statechart.OnCreate(callback);
             }
@@ -63,7 +64,7 @@ namespace Maze.StateFoundry
 
         public void OnDispose<TState>(Action<TState> callback) where TState : State, new()
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 statechart.OnDispose(callback);
             }
@@ -71,32 +72,25 @@ namespace Maze.StateFoundry
 
         void SubscribeToTriggers()
         {
-            foreach (IStatechart chart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
-                ITriggerSink sink = GetSink(chart);
-                m_callbacks[sink] = trigger => OnInternalTrigger(trigger, chart);
-                sink.OnTrigger += m_callbacks[sink];
+                IStatechartRunner runner = statechart.Runner;
+                m_callbacks[runner] = trigger => OnInternalTrigger(trigger, statechart);
+                runner.OnTrigger += m_callbacks[runner];
             }
         }
 
         void UnsubscribeToTriggers()
         {
-            foreach (KeyValuePair<ITriggerSink, Action<ITrigger>> kvp in m_callbacks)
+            foreach (KeyValuePair<IStatechartRunner, Action<ITrigger>> kvp in m_callbacks)
             {
                 kvp.Key.OnTrigger -= kvp.Value;
             }
         }
 
-        static ITriggerSink GetSink(IStatechart statechart)
-        {
-            Type type = statechart.GetType();
-            FieldInfo runnerField = type.GetField("Runner", BindingFlags.NonPublic | BindingFlags.Instance);
-            return runnerField?.GetValue(statechart) as ITriggerSink;
-        }
-
         void OnInternalTrigger(ITrigger trigger, IStatechart chart)
         {
-            foreach (IStatechart statechart in m_charts)
+            foreach (IInternalStatechart statechart in m_statecharts)
             {
                 if (statechart == chart)
                 {

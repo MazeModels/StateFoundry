@@ -2,7 +2,7 @@
 
 namespace Maze.StateFoundry
 {
-    interface ITriggerSink
+    interface IStatechartRunner : IStatechart
     {
         event Action<ITrigger> OnTrigger;
     }
