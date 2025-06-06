@@ -48,5 +48,15 @@ namespace Maze.StateFoundry
         {
             m_runner.OnDispose(callback);
         }
+
+        public void Add<T>(T component)
+        {
+            m_runner.Add(component);
+        }
+
+        public T Get<T>()
+        {
+            return m_runner.Get<T>();
+        }
     }
 }

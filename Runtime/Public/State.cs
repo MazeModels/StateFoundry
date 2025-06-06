@@ -7,6 +7,9 @@ namespace Maze.StateFoundry
         internal event Action<ITrigger> OnEventSent;
         internal event Action<When> OnLifecycleEvent;
 
+        IBlackboard IInternalState.Blackboard { get; set; }
+
+
         public State()
         {
             ((IInternalState) this).InternalOnCreate();
@@ -45,6 +48,16 @@ namespace Maze.StateFoundry
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
             OnEventSent?.Invoke(trigger);
+        }
+        
+        public void Add<T>(T component)
+        {
+            ((IInternalState) this).Blackboard.Add(component);
+        }
+
+        public T Get<T>()
+        {
+            return ((IInternalState) this).Blackboard.Get<T>();
         }
 
         void IInternalState.InternalOnEnter()

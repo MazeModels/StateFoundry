@@ -4,18 +4,20 @@ using UnityEngine;
 
 namespace Maze.StateFoundry
 {
-    sealed class StatechartRunner<TInitialState> : IStatechartRunner, IDisposable where TInitialState : State, new()
+    sealed class StatechartRunner<TInitialState> : IStatechartRunner, IBlackboard, IDisposable where TInitialState : State, new()
     {
         public event Action<ITrigger> OnTrigger;
 
         readonly Type m_statechartType;
         readonly StatePool<TInitialState> m_pool;
         readonly StatechartEvents<TInitialState> m_events;
+        readonly StatechartBlackboard m_blackboard;
 
         public StatechartRunner(Type statechartType)
         {
             m_statechartType = statechartType;
-            m_pool = new StatePool<TInitialState>();
+            m_blackboard = new StatechartBlackboard();
+            m_pool = new StatePool<TInitialState>(m_blackboard);
             m_events = new StatechartEvents<TInitialState>(m_pool);
             SubscribeToEvents();
         }
@@ -68,6 +70,16 @@ namespace Maze.StateFoundry
         public void OnDispose<TState>(Action<TState> callback) where TState : State, new()
         {
             m_events.OnLifecycleEvent(When.OnDispose, callback);
+        }
+
+        public void Add<T>(T component)
+        {
+            m_blackboard.Add(component);
+        }
+
+        public T Get<T>()
+        {
+            return m_blackboard.Get<T>();
         }
 
 
