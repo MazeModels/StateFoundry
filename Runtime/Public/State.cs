@@ -1,21 +1,20 @@
 ﻿using System;
-using UnityEngine;
 
 namespace Maze.StateFoundry
 {
-    public abstract class State : IDisposable
+    public abstract class State : IInternalState, IDisposable
     {
         internal event Action<ITrigger> OnEventSent;
         internal event Action<When> OnLifecycleEvent;
 
         public State()
         {
-            InternalOnCreate();
+            ((IInternalState) this).InternalOnCreate();
         }
 
         public void Dispose()
         {
-            InternalOnDispose();
+            ((IInternalState) this).InternalOnDispose();
         }
 
         public virtual void OnEnter()
@@ -48,28 +47,28 @@ namespace Maze.StateFoundry
             OnEventSent?.Invoke(trigger);
         }
 
-        internal void InternalOnEnter()
+        void IInternalState.InternalOnEnter()
         {
             LogSpecialMethod(nameof(OnEnter));
             OnEnter();
             OnLifecycleEvent?.Invoke(When.OnEnter);
         }
 
-        internal void InternalOnExit()
+        void IInternalState.InternalOnExit()
         {
             LogSpecialMethod(nameof(OnExit));
             OnExit();
             OnLifecycleEvent?.Invoke(When.OnExit);
         }
 
-        internal void InternalOnCreate()
+        void IInternalState.InternalOnCreate()
         {
             LogSpecialMethod(nameof(OnCreate));
             OnCreate();
             OnLifecycleEvent?.Invoke(When.OnCreate);
         }
 
-        internal void InternalOnDispose()
+        void IInternalState.InternalOnDispose()
         {
             LogSpecialMethod(nameof(OnDispose));
             OnDispose();

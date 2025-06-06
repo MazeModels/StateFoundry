@@ -128,12 +128,12 @@ namespace Maze.StateFoundry
             StateData ancestor = m_nav.FindCommonAncestor(newData, oldData);
             foreach (StateData data in m_nav.FindPathToAncestor(oldData, ancestor))
             {
-                data.State.InternalOnExit();
+                ((IInternalState) data.State).InternalOnExit();
             }
 
             foreach (StateData data in m_nav.FindPathFromAncestor(newData, ancestor))
             {
-                data.State.InternalOnEnter();
+                ((IInternalState) data.State).InternalOnEnter();
             }
         }
 
@@ -141,7 +141,7 @@ namespace Maze.StateFoundry
         {
             foreach (StateData data in m_nav.FindPathFromRoot(newData))
             {
-                data.State.InternalOnEnter();
+                ((IInternalState) data.State).InternalOnEnter();
             }
         }
     }
