@@ -6,7 +6,7 @@ namespace Maze.StateFoundry.Editor
 {
     sealed class UmlPrinter
     {
-        const string FILE_EXTENSION = ".g.puml";
+        public const string FILE_EXTENSION = ".g.puml";
 
         readonly BlockFinder m_finder;
         readonly TextGenerator m_textGenerator;
