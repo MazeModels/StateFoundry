@@ -1,5 +1,7 @@
+using System;
+using System.IO;
 using UnityEditor;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Maze.StateFoundry.Editor
 {
@@ -30,6 +32,46 @@ namespace Maze.StateFoundry.Editor
             {
                 string path = AssetDatabase.GetAssetPath(obj);
                 installer.Run(path);
+                ImportNewAsset(path);
+            }
+        }
+
+        static void ImportNewAsset(string pathToScript)
+        {
+            if (TryGetNewAsset(pathToScript, out string pathToAsset))
+            {
+                AssetDatabase.ImportAsset(pathToAsset);
+            }
+        }
+
+        static bool TryGetNewAsset(string pathToScript, out string pathToAsset)
+        {
+            if (string.IsNullOrEmpty(pathToScript))
+            {
+                pathToAsset = null;
+                return false;
+            }
+
+            if (!TryGetAssetNameNoThrow(pathToScript, out pathToAsset))
+            {
+                return false;
+            }
+
+            pathToAsset = Path.Combine(Path.GetDirectoryName(pathToScript), pathToAsset);
+            return true;
+        }
+
+        static bool TryGetAssetNameNoThrow(string pathToScript, out string pathToAsset)
+        {
+            try
+            {
+                pathToAsset = $"{Path.GetFileNameWithoutExtension(pathToScript)}{UmlPrinter.FILE_EXTENSION}";
+                return true;
+            }
+            catch (Exception)
+            {
+                pathToAsset = null;
+                return false;
             }
         }
     }
