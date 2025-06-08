@@ -25,5 +25,8 @@
     "unity",
     "fsm",
     "game-architecture"
-  ]
+  ],
+  "dependencies": {
+    "com.mazemodels.testingtoolkit": "0.0.2"
+  }
 }
