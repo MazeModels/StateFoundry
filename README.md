@@ -19,7 +19,7 @@ To make installing the package easier, you can use [OpenUPM](https://openupm.com
    - Enter the following details:
      - **Name:** OpenUPM
      - **URL:** https://package.openupm.com
-     - **Scopes:** `com.mazemodels.statefoundry`
+     - **Scopes:** `com.mazemodels`
 
 2. Install the package:
    - Return to the **Package Manager** window.
