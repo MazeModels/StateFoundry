@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace Maze.StateFoundry
 {
-    sealed class StateGraph
+    sealed class StateGraph : IStateGraph
     {
-        public IReadOnlyDictionary<Type, StateMeta> States => m_states;
-        readonly Dictionary<Type, StateMeta> m_states;
+        public IReadOnlyDictionary<Type, IStateMeta> States => m_states;
+        readonly Dictionary<Type, IStateMeta> m_states;
 
 
         public StateGraph(Type initialState)
         {
             EnsureConcreteState(initialState);
-            m_states = new Dictionary<Type, StateMeta>();
+            m_states = new Dictionary<Type, IStateMeta>();
             BuildMetaGraph(initialState);
         }
 
@@ -23,26 +23,26 @@ namespace Maze.StateFoundry
             BuildMetaGraphRecursive(currentType, m_states);
         }
 
-        static void BuildMetaGraphRecursive(Type currentType, Dictionary<Type, StateMeta> visited)
+        static void BuildMetaGraphRecursive(Type currentType, Dictionary<Type, IStateMeta> visited)
         {
             if (visited.ContainsKey(currentType))
             {
                 return;
             }
 
-            StateMeta current = BuildMeta(currentType, visited);
+            IStateMeta current = BuildMeta(currentType, visited);
             BuildAncestors(visited, currentType.BaseType, current);
             BuildConnections(currentType, visited);
         }
 
-        static StateMeta BuildMeta(Type currentType, Dictionary<Type, StateMeta> visited)
+        static IStateMeta BuildMeta(Type currentType, Dictionary<Type, IStateMeta> visited)
         {
             var currentData = new StateMeta(currentType);
             visited[currentType] = currentData;
             return currentData;
         }
 
-        static void BuildAncestors(Dictionary<Type, StateMeta> visited, Type baseType, StateMeta currentMeta)
+        static void BuildAncestors(Dictionary<Type, IStateMeta> visited, Type baseType, IStateMeta currentMeta)
         {
             if (baseType == null || baseType == typeof(State))
             {
@@ -50,37 +50,37 @@ namespace Maze.StateFoundry
             }
 
             BuildMetaGraphRecursive(baseType, visited);
-            StateMeta baseMeta = visited[baseType];
+            IStateMeta baseMeta = visited[baseType];
             currentMeta.SetParent(baseMeta);
             baseMeta.AddChild(currentMeta);
         }
 
-        static void BuildConnections(Type current, Dictionary<Type, StateMeta> visited)
+        static void BuildConnections(Type current, Dictionary<Type, IStateMeta> visited)
         {
             List<Type> lineage = GetInheritanceChain(current).Reverse().ToList();
             BuildDirectTransitions(visited, lineage);
             BuildTransitions(visited, lineage);
         }
 
-        static void BuildTransitions(Dictionary<Type, StateMeta> visited, List<Type> lineage)
+        static void BuildTransitions(Dictionary<Type, IStateMeta> visited, List<Type> lineage)
         {
-            var transitions = new Dictionary<Type, StateMeta>();
+            var transitions = new Dictionary<Type, IStateMeta>();
             foreach (Type state in lineage)
             {
-                StateMeta meta = visited[state];
-                foreach (KeyValuePair<Type, StateMeta> kvp in meta.DirectTransition)
+                IStateMeta meta = visited[state];
+                foreach (KeyValuePair<Type, IStateMeta> kvp in meta.DirectTransition)
                 {
                     transitions[kvp.Key] = kvp.Value;
                 }
 
-                foreach (KeyValuePair<Type, StateMeta> kvp in transitions)
+                foreach (KeyValuePair<Type, IStateMeta> kvp in transitions)
                 {
                     visited[state].AddTransition(kvp.Key, kvp.Value);
                 }
             }
         }
 
-        static void BuildDirectTransitions(Dictionary<Type, StateMeta> visited, List<Type> lineage)
+        static void BuildDirectTransitions(Dictionary<Type, IStateMeta> visited, List<Type> lineage)
         {
             foreach (Type state in lineage)
             {
