@@ -16,6 +16,12 @@ namespace Maze.StateFoundry
             m_internal.Dispose();
         }
 
+
+        public void Start()
+        {
+            m_internal.Start();
+        }
+
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
             m_internal.Send(trigger);

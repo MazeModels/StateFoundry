@@ -1,6 +1,7 @@
 ﻿namespace Maze.StateFoundry
 {
-    public interface IStatechart : IStateLifecycle, ITriggerChannel
+    public interface IStatechart : IStatechartLifecycle, ITriggerChannel
     {
+        void Start();
     }
 }

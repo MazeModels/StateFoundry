@@ -3,13 +3,13 @@ using System;
 namespace Maze.StateFoundry
 {
     public abstract class Statechart<TInitialState> : IInternalStatechart, IDisposable where TInitialState : State, new()
-    { 
+    {
         IStatechartRunner IInternalStatechart.Runner => m_runner;
-        readonly StatechartRunner<TInitialState> m_runner;
+        readonly IStatechartRunner m_runner;
 
         public Statechart()
         {
-            m_runner = new StatechartRunner<TInitialState>(GetType());
+            m_runner = StatechartRunnerFactory.Build<TInitialState>(GetType());
         }
 
         public void Dispose()
@@ -17,6 +17,11 @@ namespace Maze.StateFoundry
             m_runner.Dispose();
         }
 
+
+        public void Start()
+        {
+            m_runner.Start();
+        }
 
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {

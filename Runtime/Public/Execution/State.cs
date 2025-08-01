@@ -2,10 +2,22 @@
 
 namespace Maze.StateFoundry
 {
-    public abstract class State : IInternalState, IDisposable
+    public abstract class State : IInternalState
     {
-        internal event Action<ITrigger> OnEventSent;
-        internal event Action<When> OnLifecycleEvent;
+        event Action<ITrigger> OnInternalEventSent;
+        event Action<When> OnInternalLifecycleEvent;
+
+        event Action<ITrigger> IInternalState.OnEventSent
+        {
+            add => OnInternalEventSent += value;
+            remove => OnInternalEventSent -= value;
+        }
+
+        event Action<When> IInternalState.OnLifecycleEvent
+        {
+            add => OnInternalLifecycleEvent += value;
+            remove => OnInternalLifecycleEvent -= value;
+        }
 
         IBlackboard IInternalState.Blackboard { get; set; }
 
@@ -47,9 +59,9 @@ namespace Maze.StateFoundry
 
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            OnEventSent?.Invoke(trigger);
+            OnInternalEventSent?.Invoke(trigger);
         }
-        
+
         public void Add<T>(T component)
         {
             ((IInternalState) this).Blackboard.Add(component);
@@ -64,28 +76,28 @@ namespace Maze.StateFoundry
         {
             LogSpecialMethod(nameof(OnEnter));
             OnEnter();
-            OnLifecycleEvent?.Invoke(When.OnEnter);
+            OnInternalLifecycleEvent?.Invoke(When.OnEnter);
         }
 
         void IInternalState.InternalOnExit()
         {
             LogSpecialMethod(nameof(OnExit));
             OnExit();
-            OnLifecycleEvent?.Invoke(When.OnExit);
+            OnInternalLifecycleEvent?.Invoke(When.OnExit);
         }
 
         void IInternalState.InternalOnCreate()
         {
             LogSpecialMethod(nameof(OnCreate));
             OnCreate();
-            OnLifecycleEvent?.Invoke(When.OnCreate);
+            OnInternalLifecycleEvent?.Invoke(When.OnCreate);
         }
 
         void IInternalState.InternalOnDispose()
         {
             LogSpecialMethod(nameof(OnDispose));
             OnDispose();
-            OnLifecycleEvent?.Invoke(When.OnDispose);
+            OnInternalLifecycleEvent?.Invoke(When.OnDispose);
         }
 
         void LogSpecialMethod(string methodName)
