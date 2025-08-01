@@ -80,7 +80,8 @@ namespace Maze.StateFoundry.Tests
         [Test]
         public void Given_OnCreateListener_When_StateCreated_Then_CallbackInvoked()
         {
-            using var sut = new Stateworld(m_statechart);
+            using var statechart = new MockStatechart();
+            using var sut = new Stateworld(statechart);
             var called = false;
 
             sut.OnCreate<StateA>(_ => called = true);

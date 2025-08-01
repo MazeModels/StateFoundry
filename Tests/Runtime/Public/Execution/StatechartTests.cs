@@ -108,6 +108,12 @@ namespace Maze.StateFoundry.Tests
             Assert.IsNotNull(runner);
         }
 
+        [Test]
+        public void Given_NullTypePassedToFactory_Then_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => StatechartRunnerFactory.Build<MockInitialState>(null));
+        }
+
 
         class MockStatechart : Statechart<MockInitialState> { }
         class MockInitialState : State, IGet<MockTrigger, MockNextState> { }

@@ -71,6 +71,12 @@ namespace Maze.StateFoundry.Tests
         }
 
         [Test]
+        public void Given_StartCalledTwice_Then_ThrowsInvalidOperationException()
+        {
+            Assert.Throws<InvalidOperationException>(() => m_sut.Start());
+        }
+
+        [Test]
         public void Given_SendCalledBeforeStart_Then_ThrowsInvalidOperationException()
         {
             using var sut = new StatechartRunner<InitialState>(typeof(ValidStatechart), m_blackboard, m_pool, m_events);

@@ -33,6 +33,20 @@ namespace Maze.StateFoundry.Tests
         }
 
         [Test]
+        public void Given_SetParentCalledWithNull_Then_ThrowsArgumentNullException()
+        {
+            var data = new StateData(m_meta, m_blackboard, m_factory);
+            Assert.Throws<ArgumentNullException>(() => data.SetParent(null));
+        }
+
+        [Test]
+        public void Given_AddChildCalledWithNull_Then_ThrowsArgumentNullException()
+        {
+            var data = new StateData(m_meta, m_blackboard, m_factory);
+            Assert.Throws<ArgumentNullException>(() => data.AddChild(null));
+        }
+
+        [Test]
         public void Given_StateDataCreated_Then_BlackboardIsInjected()
         {
             _ = new StateData(m_meta, m_blackboard, m_factory);

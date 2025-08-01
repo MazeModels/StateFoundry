@@ -125,7 +125,68 @@ namespace Maze.StateFoundry.Tests
 
             Assert.AreEqual(nameof(DummyState), result);
         }
-        
+
+        [Test]
+        public void Given_SetParentCalledWithNull_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+
+            Assert.Throws<ArgumentNullException>(() => state.SetParent(null));
+        }
+
+        [Test]
+        public void Given_AddChildCalledWithNull_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+
+            Assert.Throws<ArgumentNullException>(() => state.AddChild(null));
+        }
+
+        [Test]
+        public void Given_AddTransitionCalledWithNullTrigger_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+            var target = new StateMeta(typeof(DummyTargetState));
+
+            Assert.Throws<ArgumentNullException>(() => state.AddTransition(null, target));
+        }
+
+        [Test]
+        public void Given_AddTransitionCalledWithNullDestination_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+            Type trigger = typeof(DummyTrigger);
+
+            Assert.Throws<ArgumentNullException>(() => state.AddTransition(trigger, null));
+        }
+
+        [Test]
+        public void Given_AddDirectTransitionCalledWithNullTrigger_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+            var target = new StateMeta(typeof(DummyTargetState));
+
+            Assert.Throws<ArgumentNullException>(() => state.AddDirectTransition(null, target));
+        }
+
+        [Test]
+        public void Given_AddDirectTransitionCalledWithNullDestination_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+            Type trigger = typeof(DummyTrigger);
+
+            Assert.Throws<ArgumentNullException>(() => state.AddDirectTransition(trigger, null));
+        }
+
+        [Test]
+        public void Given_AddCaptionCalledWithNull_Then_ThrowsArgumentNullException()
+        {
+            var state = new StateMeta(m_exampleType);
+
+            Assert.Throws<ArgumentNullException>(() => state.AddCaption(null));
+        }
+
+
         class DummyState { }
         class DummyParentState { }
         class DummyChildState { }
