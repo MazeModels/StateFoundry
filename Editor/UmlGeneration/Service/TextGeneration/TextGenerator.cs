@@ -28,7 +28,7 @@ namespace Maze.StateFoundry.Editor
         {
             Type block = m_finder.GetBlocks().First();
             Type initialState = m_analyzer.GetInitialState();
-            StateGraph tree = m_analyzer.GetTree();
+            IStateGraph tree = m_analyzer.GetTree();
 
             CacheCompleteNames(block, tree);
             m_generatedText = CreateFullText(block, tree, initialState);
@@ -39,13 +39,13 @@ namespace Maze.StateFoundry.Editor
             return m_generatedText;
         }
 
-        void CacheCompleteNames(Type block, StateGraph tree)
+        void CacheCompleteNames(Type block, IStateGraph tree)
         {
             string blockName = GetStartingName(block);
             BuildFullNames(tree, blockName, m_fullNames);
         }
 
-        string CreateFullText(Type block, StateGraph tree, Type initialState)
+        string CreateFullText(Type block, IStateGraph tree, Type initialState)
         {
             var sb = new StringBuilder();
             AddHeader(block, sb);
@@ -59,7 +59,7 @@ namespace Maze.StateFoundry.Editor
             return sb.ToString();
         }
 
-        static void BuildFullNames(StateGraph tree, string currentName, HashSet<string> fullNames)
+        static void BuildFullNames(IStateGraph tree, string currentName, HashSet<string> fullNames)
         {
             fullNames.Add(currentName);
             foreach (StateMeta state in tree.States.Values)
@@ -95,7 +95,7 @@ namespace Maze.StateFoundry.Editor
             sb.AppendLine($"@startuml {blockType.Name}");
         }
 
-        static void AddState(Type block, StateGraph tree, StringBuilder sb, HashSet<string> fullNames)
+        static void AddState(Type block, IStateGraph tree, StringBuilder sb, HashSet<string> fullNames)
         {
             string fullName = FindFullName(block, fullNames);
             sb.AppendLine($"state \"{block.Name}\" as {fullName} {{");
@@ -127,13 +127,13 @@ namespace Maze.StateFoundry.Editor
             sb.AppendLine($"{spaces}}}");
         }
 
-        static void AddTransitions(StateGraph tree, StringBuilder sb, HashSet<string> fullNames)
+        static void AddTransitions(IStateGraph tree, StringBuilder sb, HashSet<string> fullNames)
         {
             foreach (StateMeta state in tree.States.Values)
             {
                 string startNode = FindFullName(state.Type, fullNames);
 
-                foreach (KeyValuePair<Type, StateMeta> transition in state.DirectTransition)
+                foreach (KeyValuePair<Type, IStateMeta> transition in state.DirectTransition)
                 {
                     string endNode = FindFullName(transition.Value.Type, fullNames);
                     string input = transition.Key.Name;
@@ -142,7 +142,7 @@ namespace Maze.StateFoundry.Editor
             }
         }
 
-        static void AddCaptions(StateGraph tree, StringBuilder sb, HashSet<string> fullNames)
+        static void AddCaptions(IStateGraph tree, StringBuilder sb, HashSet<string> fullNames)
         {
             foreach (StateMeta state in tree.States.Values)
             {

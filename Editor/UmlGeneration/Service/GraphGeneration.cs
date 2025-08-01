@@ -23,6 +23,8 @@ namespace Maze.StateFoundry.Editor
             m_textGenerator = textGenerator;
             m_printer = printer;
 
+            m_block.Start();
+
             m_block.OnEnter<BlockEvaluation>(CheckIfBlock);
             m_block.OnEnter<HierarchyAnalysis>(AnalyzeHierarchy);
             m_block.OnEnter<TextGeneration>(GenerateText);
