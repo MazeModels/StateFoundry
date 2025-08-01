@@ -6,9 +6,9 @@ namespace Maze.StateFoundry.Editor
 {
     sealed class CaptionFinder
     {
-        public StateGraph FindCaptions(StateGraph tree)
+        public IStateGraph FindCaptions(IStateGraph tree)
         {
-            foreach (KeyValuePair<Type, StateMeta> pair in tree.States)
+            foreach (KeyValuePair<Type, IStateMeta> pair in tree.States)
             {
                 CacheCaption(pair);
             }
@@ -16,7 +16,7 @@ namespace Maze.StateFoundry.Editor
             return tree;
         }
 
-        static void CacheCaption(KeyValuePair<Type, StateMeta> pair)
+        static void CacheCaption(KeyValuePair<Type, IStateMeta> pair)
         {
             foreach (string caption in GetCaptions(pair.Key))
             {
