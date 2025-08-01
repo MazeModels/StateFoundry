@@ -5,12 +5,12 @@ using System.Reflection;
 
 namespace Maze.StateFoundry
 {
-    sealed class StatechartEvents<TInitialState> : IDisposable where TInitialState : State, new()
+    sealed class StatechartEvents<TInitialState> : IStatechartEvents<TInitialState> where TInitialState : State, new()
     {
-        readonly StatePool<TInitialState> m_pool;
+        readonly IStatePool<TInitialState> m_pool;
         readonly Dictionary<Type, Delegate> m_callbacks;
 
-        public StatechartEvents(StatePool<TInitialState> pool)
+        public StatechartEvents(IStatePool<TInitialState> pool)
         {
             m_pool = pool;
             m_callbacks = new Dictionary<Type, Delegate>();
@@ -22,14 +22,15 @@ namespace Maze.StateFoundry
             UnsubscribeToEvents();
         }
 
-        public StateData Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
+        public IStateData Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            StateData currentData = m_pool.CurrentData;
+            IStateData currentData = m_pool.GetCurrentState();
             return SendRecurse(currentData, trigger);
         }
 
         public void Listen<TTrigger>(Action<TTrigger> callback) where TTrigger : struct, ITrigger
         {
+            EnsureIsNotNull(callback);
             Type type = typeof(TTrigger);
             if (m_callbacks.TryGetValue(type, out Delegate existing))
             {
@@ -43,12 +44,13 @@ namespace Maze.StateFoundry
 
         public void OnLifecycleEvent<TState>(When expected, Action<TState> callback) where TState : State, new()
         {
-            State state = EnsureStateIsRegistered<TState>();
+            EnsureIsNotNull(callback);
+            IInternalState state = EnsureStateIsRegistered<TState>();
             state.OnLifecycleEvent += actual => OnLifecycleEvent(expected, actual, state, callback);
         }
 
 
-        StateData SendRecurse<TTrigger>(StateData data, TTrigger trigger) where TTrigger : struct, ITrigger
+        IStateData SendRecurse<TTrigger>(IStateData data, TTrigger trigger) where TTrigger : struct, ITrigger
         {
             if (data == null)
             {
@@ -74,7 +76,7 @@ namespace Maze.StateFoundry
                     continue;
                 }
 
-                if (!m_pool.States.TryGetValue(targetType, out StateData instance))
+                if (!m_pool.GetStates().TryGetValue(targetType, out IStateData instance))
                 {
                     throw new ArgumentException($"Type {targetType} is not registered");
                 }
@@ -82,6 +84,8 @@ namespace Maze.StateFoundry
                 Type intType = typeof(IGet<,>).MakeGenericType(typeof(TTrigger), targetType);
                 MethodInfo method = stateType.GetInterfaceMap(intType).TargetMethods.FirstOrDefault(m => m.Name.Contains("Get"));
                 method?.Invoke(data.State, new object[] { trigger });
+
+                OnSend(trigger);
 
                 return instance;
             }
@@ -91,7 +95,7 @@ namespace Maze.StateFoundry
 
         void SubscribeToEvents()
         {
-            foreach (StateData data in m_pool.States.Values)
+            foreach (IStateData data in m_pool.GetStates().Values)
             {
                 data.State.OnEventSent += OnSend;
             }
@@ -99,7 +103,7 @@ namespace Maze.StateFoundry
 
         void UnsubscribeToEvents()
         {
-            foreach (StateData data in m_pool.States.Values)
+            foreach (IStateData data in m_pool.GetStates().Values)
             {
                 data.State.OnEventSent -= OnSend;
             }
@@ -113,7 +117,7 @@ namespace Maze.StateFoundry
             }
         }
 
-        void OnLifecycleEvent<TState>(When expected, When actual, State state, Action<TState> callback) where TState : State, new()
+        void OnLifecycleEvent<TState>(When expected, When actual, IInternalState state, Action<TState> callback) where TState : State, new()
         {
             if (expected == actual)
             {
@@ -121,13 +125,22 @@ namespace Maze.StateFoundry
             }
         }
 
-        State EnsureStateIsRegistered<TState>() where TState : State, new()
+        IInternalState EnsureStateIsRegistered<TState>() where TState : State, new()
         {
-            if (!m_pool.States.TryGetValue(typeof(TState), out StateData data))
+            if (!m_pool.GetStates().TryGetValue(typeof(TState), out IStateData data))
             {
                 throw new ArgumentException($"State {typeof(TState).FullName} is not registered");
             }
+
             return data.State;
+        }
+
+        void EnsureIsNotNull<T>(T instance) where T : class
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
 }

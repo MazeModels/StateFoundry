@@ -2,7 +2,7 @@
 
 namespace Maze.StateFoundry
 {
-    interface IStatechartRunner : IStatechart
+    interface IStatechartRunner : IStatechart, IBlackboard, IDisposable
     {
         event Action<ITrigger> OnTrigger;
     }

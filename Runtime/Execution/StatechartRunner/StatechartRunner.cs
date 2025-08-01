@@ -4,21 +4,24 @@ using UnityEngine;
 
 namespace Maze.StateFoundry
 {
-    sealed class StatechartRunner<TInitialState> : IStatechartRunner, IBlackboard, IDisposable where TInitialState : State, new()
+    sealed class StatechartRunner<TInitialState> : IStatechartRunner where TInitialState : State, new()
     {
         public event Action<ITrigger> OnTrigger;
 
         readonly Type m_statechartType;
-        readonly StatePool<TInitialState> m_pool;
-        readonly StatechartEvents<TInitialState> m_events;
-        readonly StatechartBlackboard m_blackboard;
+        readonly IStatePool<TInitialState> m_pool;
+        readonly IStatechartEvents<TInitialState> m_events;
+        readonly IBlackboard m_blackboard;
 
-        public StatechartRunner(Type statechartType)
+        bool m_isRunning;
+
+        public StatechartRunner(Type statechartType, IBlackboard blackboard, IStatePool<TInitialState> pool, IStatechartEvents<TInitialState> events)
         {
             m_statechartType = statechartType;
-            m_blackboard = new StatechartBlackboard();
-            m_pool = new StatePool<TInitialState>(m_blackboard);
-            m_events = new StatechartEvents<TInitialState>(m_pool);
+            m_blackboard = blackboard;
+            m_pool = pool;
+            m_events = events;
+            CheckPrecondtions();
             SubscribeToEvents();
         }
 
@@ -29,16 +32,27 @@ namespace Maze.StateFoundry
         }
 
 
+        public void Start()
+        {
+            m_isRunning = true;
+
+            foreach (IStateData state in m_pool.GetStates().Values)
+            {
+                state.State.InternalOnCreate();
+            }
+        }
+
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
-            StateData newData = m_events.Send(trigger);
+            EnsureIsRunning();
+            IStateData newData = m_events.Send(trigger);
 
             if (newData == null)
             {
                 return;
             }
 
-            LogTransition(m_pool.CurrentData, newData, trigger);
+            LogTransition(m_pool.GetCurrentState(), newData, trigger);
             m_pool.SetCurrentState(newData);
         }
 
@@ -85,7 +99,7 @@ namespace Maze.StateFoundry
 
         void SubscribeToEvents()
         {
-            foreach (StateData data in m_pool.States.Values)
+            foreach (IStateData data in m_pool.GetStates().Values)
             {
                 data.State.OnEventSent += InternalSend;
             }
@@ -93,7 +107,7 @@ namespace Maze.StateFoundry
 
         void UnsubscribeToEvents()
         {
-            foreach (StateData data in m_pool.States.Values)
+            foreach (IStateData data in m_pool.GetStates().Values)
             {
                 data.State.OnEventSent -= InternalSend;
             }
@@ -107,7 +121,7 @@ namespace Maze.StateFoundry
             OnTrigger?.Invoke(trigger);
         }
 
-        void LogTransition(StateData oldData, StateData newData, ITrigger trigger)
+        void LogTransition(IStateData oldData, IStateData newData, ITrigger trigger)
         {
             Debug.Log($"<color=cyan>{{R}}|[{m_statechartType.Name}]: [{oldData}] --{trigger.GetType().Name}--> [{newData}]</color>");
         }
@@ -115,6 +129,56 @@ namespace Maze.StateFoundry
         void LogEventReceived<TTrigger>() where TTrigger : struct, ITrigger
         {
             Debug.Log($"<color=magenta>{{R}}|{m_statechartType.Name}|: {typeof(TTrigger).Name}</color>");
+        }
+
+        void EnsureIsRunning()
+        {
+            if (!m_isRunning)
+            {
+                throw new InvalidOperationException("The state machine is not running.");
+            }
+        }
+
+        void CheckPrecondtions()
+        {
+            EnsureArgumentsAreNotNull(m_blackboard, m_pool, m_events);
+            EnsureTypeIsNotNull(m_statechartType);
+            EnsureIsNotAbstract(m_statechartType);
+            EnsureIsStatechartType(m_statechartType);
+        }
+
+        static void EnsureTypeIsNotNull(Type statechartType)
+        {
+            if (statechartType == null)
+            {
+                throw new ArgumentNullException(nameof(statechartType));
+            }
+        }
+
+        static void EnsureIsNotAbstract(Type statechartType)
+        {
+            if (statechartType.IsAbstract)
+            {
+                throw new ArgumentException($"The provided type '{statechartType.FullName}' must not be abstract.");
+            }
+        }
+
+        static void EnsureIsStatechartType(Type statechartType)
+        {
+            if (!typeof(Statechart<TInitialState>).IsAssignableFrom(statechartType))
+            {
+                throw new ArgumentException($"The provided type '{statechartType.FullName}' must be assignable to '{typeof(Statechart<TInitialState>).FullName}'.");
+            }
+        }
+        static void EnsureArgumentsAreNotNull(params object[] args)
+        {
+            foreach (var arg in args)
+            {
+                if (arg == null)
+                {
+                    throw new ArgumentNullException();
+                }
+            }
         }
     }
 }

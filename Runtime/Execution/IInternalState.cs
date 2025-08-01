@@ -1,9 +1,14 @@
-﻿namespace Maze.StateFoundry
+﻿using System;
+
+namespace Maze.StateFoundry
 {
-    interface IInternalState
+    interface IInternalState : IState, IDisposable
     {
-        internal IBlackboard Blackboard { get; set; }
+        internal event Action<ITrigger> OnEventSent;
+        internal event Action<When> OnLifecycleEvent;
         
+        internal IBlackboard Blackboard { get; set; }
+
         internal void InternalOnEnter();
         internal void InternalOnExit();
         internal void InternalOnCreate();

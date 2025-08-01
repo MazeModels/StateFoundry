@@ -22,6 +22,14 @@ namespace Maze.StateFoundry
             UnsubscribeToTriggers();
         }
 
+        public void Start()
+        {
+            foreach (IInternalStatechart statechart in m_statecharts)
+            {
+                statechart.Start();
+            }
+        }
+
         public void Send<TTrigger>(TTrigger trigger) where TTrigger : struct, ITrigger
         {
             foreach (IInternalStatechart statechart in m_statecharts)
