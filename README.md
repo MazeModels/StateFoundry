@@ -1,4 +1,5 @@
 # StateFoundry
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/MazeModels/StateFoundry?utm_source=oss&utm_medium=github&utm_campaign=MazeModels%2FStateFoundry&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 Implementation of statecharts, a formalism for modeling stateful logic that extends traditional finite state machines.
 
 ## Additional resources
