@@ -1,5 +1,3 @@
-using System;
-
 namespace Maze.StateFoundry
 {
     interface IStateDataFactory

@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace Maze.StateFoundry.Tests
 {
+    [TestFixture]
     public class StateGraphFactoryTests
     {
         private StateGraphFactory m_factory;

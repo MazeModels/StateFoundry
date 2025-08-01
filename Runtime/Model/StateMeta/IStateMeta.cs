@@ -8,7 +8,7 @@ namespace Maze.StateFoundry
         Type Type { get; }
         IReadOnlyList<IStateMeta> Children { get; }
         IReadOnlyDictionary<Type, IStateMeta> Transitions { get; }
-        IReadOnlyDictionary<Type, IStateMeta> DirectTransition { get; }
+        IReadOnlyDictionary<Type, IStateMeta> DirectTransitions { get; }
         IReadOnlyList<string> Captions { get; }
         IStateMeta Parent { get; }
 

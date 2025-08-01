@@ -38,9 +38,9 @@ namespace Maze.StateFoundry.Tests
 
             var mid = graph.States[typeof(MidState)];
 
-            Assert.That(mid.DirectTransition.ContainsKey(typeof(Trigger)), Is.True);
+            Assert.That(mid.DirectTransitions.ContainsKey(typeof(Trigger)), Is.True);
 
-            var destination = mid.DirectTransition[typeof(Trigger)];
+            var destination = mid.DirectTransitions[typeof(Trigger)];
             Assert.That(destination.Type, Is.EqualTo(typeof(LeafState)));
         }
 

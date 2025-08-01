@@ -35,6 +35,11 @@ namespace Maze.StateFoundry
 
         public void SetParent(IStateData parent)
         {
+            if (parent == null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+
             Parent = parent;
         }
 
@@ -45,6 +50,11 @@ namespace Maze.StateFoundry
 
         public void AddChild(IStateData child)
         {
+            if (child == null)
+            {
+                throw new ArgumentNullException(nameof(child));
+            }
+
             m_children.Add(child);
         }
 

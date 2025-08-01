@@ -67,8 +67,8 @@ namespace Maze.StateFoundry.Tests
             using StatePool<LeafState1> sut = NestedStatePool();
             IStateData data = GetStateData<MidState, LeafState1>(sut);
 
-            m_sut.SetCurrentState(data);
-            var state = m_sut.GetCurrentState();
+            sut.SetCurrentState(data);
+            var state = sut.GetCurrentState();
 
             Assert.IsNotNull(state);
             Assert.AreEqual(typeof(MidState), state.Type);
@@ -253,18 +253,11 @@ namespace Maze.StateFoundry.Tests
             IStateData leaf1 = states[typeof(LeafState1)];
             IStateData leaf2 = states[typeof(LeafState2)];
 
-            Assert.AreEqual(leaf1.Parent, mid);
-            Assert.IsTrue(mid.Children.Contains(leaf1));
-
-            Assert.AreEqual(leaf2.Parent, mid);
-            Assert.IsTrue(mid.Children.Contains(leaf2));
-
-            Assert.AreEqual(mid.Parent, top);
-            Assert.IsTrue(top.Children.Contains(mid));
-
-            Assert.IsNull(top.Parent);
-            Assert.AreEqual(0, leaf1.Children.Count);
-            Assert.AreEqual(0, leaf2.Children.Count);
+            Assert.IsTrue(mid.Transitions.ContainsKey(typeof(Trigger1)));
+            Assert.AreEqual(leaf1, mid.Transitions[typeof(Trigger1)]);
+            
+            Assert.IsTrue(mid.Transitions.ContainsKey(typeof(Trigger2)));
+            Assert.AreEqual(leaf2, mid.Transitions[typeof(Trigger2)]);
         }
 
 

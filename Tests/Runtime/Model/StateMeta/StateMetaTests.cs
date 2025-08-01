@@ -44,8 +44,8 @@ namespace Maze.StateFoundry.Tests
         {
             var state = new StateMeta(m_exampleType);
 
-            Assert.IsNotNull(state.DirectTransition);
-            Assert.IsEmpty(state.DirectTransition);
+            Assert.IsNotNull(state.DirectTransitions);
+            Assert.IsEmpty(state.DirectTransitions);
         }
 
         [Test]
@@ -101,8 +101,8 @@ namespace Maze.StateFoundry.Tests
 
             source.AddDirectTransition(trigger, target);
 
-            Assert.IsTrue(source.DirectTransition.ContainsKey(trigger));
-            Assert.AreEqual(target, source.DirectTransition[trigger]);
+            Assert.IsTrue(source.DirectTransitions.ContainsKey(trigger));
+            Assert.AreEqual(target, source.DirectTransitions[trigger]);
         }
 
         [Test]

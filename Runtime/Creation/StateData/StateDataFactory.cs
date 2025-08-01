@@ -10,14 +10,21 @@ namespace Maze.StateFoundry
             return new StateData(meta, blackboard, stateFactory);
         }
 
-        void EnsureArgumentsAreNotNull(params object[] args)
+        static void EnsureArgumentsAreNotNull(IStateMeta meta, IBlackboard blackboard, IStateFactory stateFactory)
         {
-            foreach (var arg in args)
+            if (meta == null)
             {
-                if (arg == null)
-                {
-                    throw new ArgumentNullException();
-                }
+                throw new ArgumentNullException(nameof(meta));
+            }
+
+            if (blackboard == null)
+            {
+                throw new ArgumentNullException(nameof(blackboard));
+            }
+
+            if (stateFactory == null)
+            {
+                throw new ArgumentNullException(nameof(stateFactory));
             }
         }
     }

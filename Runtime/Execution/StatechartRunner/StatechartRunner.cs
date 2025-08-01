@@ -21,7 +21,7 @@ namespace Maze.StateFoundry
             m_blackboard = blackboard;
             m_pool = pool;
             m_events = events;
-            CheckPrecondtions();
+            CheckPreconditions();
             SubscribeToEvents();
         }
 
@@ -34,7 +34,7 @@ namespace Maze.StateFoundry
 
         public void Start()
         {
-            m_isRunning = true;
+            EnsureStartIsCalledOnlyOnce();
 
             foreach (IStateData state in m_pool.GetStates().Values)
             {
@@ -139,7 +139,7 @@ namespace Maze.StateFoundry
             }
         }
 
-        void CheckPrecondtions()
+        void CheckPreconditions()
         {
             EnsureArgumentsAreNotNull(m_blackboard, m_pool, m_events);
             EnsureTypeIsNotNull(m_statechartType);
@@ -170,14 +170,31 @@ namespace Maze.StateFoundry
                 throw new ArgumentException($"The provided type '{statechartType.FullName}' must be assignable to '{typeof(Statechart<TInitialState>).FullName}'.");
             }
         }
-        static void EnsureArgumentsAreNotNull(params object[] args)
+
+        void EnsureStartIsCalledOnlyOnce()
         {
-            foreach (var arg in args)
+            if (m_isRunning)
             {
-                if (arg == null)
-                {
-                    throw new ArgumentNullException();
-                }
+                throw new InvalidOperationException("The statechart has already been started.");
+            }
+
+            m_isRunning = true;
+        }
+
+        static void EnsureArgumentsAreNotNull(IBlackboard blackboard, IStatePool<TInitialState> pool, IStatechartEvents<TInitialState> events)
+        {
+            if (blackboard == null)
+            {
+                throw new ArgumentNullException(nameof(blackboard));
+            }
+            if (pool == null)
+            {
+                throw new ArgumentNullException(nameof(pool));
+            }
+
+            if (events == null)
+            {
+                throw new ArgumentNullException(nameof(events));
             }
         }
     }

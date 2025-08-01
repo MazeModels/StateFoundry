@@ -119,7 +119,6 @@ namespace Maze.StateFoundry.Tests
             m_runner1.OnTrigger += Raise.Event<Action<ITrigger>>(trigger);
 
             m_chart2.Received(1).Send(trigger);
-            m_chart2.Received(1).Send(trigger);
             m_chart1.DidNotReceive().Send(trigger);
         }
 

@@ -68,7 +68,7 @@ namespace Maze.StateFoundry
             foreach (Type state in lineage)
             {
                 IStateMeta meta = visited[state];
-                foreach (KeyValuePair<Type, IStateMeta> kvp in meta.DirectTransition)
+                foreach (KeyValuePair<Type, IStateMeta> kvp in meta.DirectTransitions)
                 {
                     transitions[kvp.Key] = kvp.Value;
                 }

@@ -24,12 +24,12 @@ namespace Maze.StateFoundry
 
         public State()
         {
-            ((IInternalState) this).InternalOnCreate();
+            ((IInternalState)this).InternalOnCreate();
         }
 
         public void Dispose()
         {
-            ((IInternalState) this).InternalOnDispose();
+            ((IInternalState)this).InternalOnDispose();
         }
 
         public virtual void OnEnter()
@@ -64,12 +64,12 @@ namespace Maze.StateFoundry
 
         public void Add<T>(T component)
         {
-            ((IInternalState) this).Blackboard.Add(component);
+            ((IInternalState)this).Blackboard.Add(component);
         }
 
         public T Get<T>()
         {
-            return ((IInternalState) this).Blackboard.Get<T>();
+            return ((IInternalState)this).Blackboard.Get<T>();
         }
 
         void IInternalState.InternalOnEnter()

@@ -62,7 +62,7 @@ namespace Maze.StateFoundry.Editor
         static void BuildFullNames(IStateGraph tree, string currentName, HashSet<string> fullNames)
         {
             fullNames.Add(currentName);
-            foreach (StateMeta state in tree.States.Values)
+            foreach (IStateMeta state in tree.States.Values)
             {
                 if (state.Parent != null)
                 {
@@ -133,7 +133,7 @@ namespace Maze.StateFoundry.Editor
             {
                 string startNode = FindFullName(state.Type, fullNames);
 
-                foreach (KeyValuePair<Type, IStateMeta> transition in state.DirectTransition)
+                foreach (KeyValuePair<Type, IStateMeta> transition in state.DirectTransitions)
                 {
                     string endNode = FindFullName(transition.Value.Type, fullNames);
                     string input = transition.Key.Name;
